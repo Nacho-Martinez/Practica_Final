@@ -1,10 +1,11 @@
 ﻿using Practica_Final.Interfaces;
+using SFML.Graphics;
 
 namespace Practica_Final.Cartas;
 
 public class Carta_Saltar : Carta,IJugada
 {
-    public Carta_Saltar(string Nombre) : base("Carta Saltar Turno")
+    public Carta_Saltar(string Nombre, string  Dibujo) : base(Nombre, Dibujo)
     {
     }
 

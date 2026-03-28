@@ -1,5 +1,7 @@
 ﻿using Practica_Final.BarajaCartas;
 using Practica_Final.Cartas;
+using Practica_Final.Jugadores;
+using Practica_Final.Managers;
 
 namespace Practica_Final;
 
@@ -14,7 +16,7 @@ class Program
         Console.WriteLine("_____________________________");
         foreach (var carta in Mazo.Baraja)
         {
-            Console.WriteLine($"Carta : {carta.Nombre}");
+            Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
         }
         Mazo.Barajar();
         Console.WriteLine("_____________________________");
@@ -22,9 +24,15 @@ class Program
         Console.WriteLine("_____________________________");
         foreach (var carta in Mazo.Baraja)
         {
-            Console.WriteLine($"Carta : {carta.Nombre}");
+            Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
         }
         Console.WriteLine("_____________________________");
-        
+        Jugador_Humano Jugador_1 = new();
+        Jugador_1.Mano = MotorJuego.Intancia.RepatirCartas(Mazo);
+        foreach (var carta in Jugador_1.Mano)
+        {
+            Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
+        }
+
     }
 }

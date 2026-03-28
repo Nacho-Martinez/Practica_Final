@@ -1,8 +1,10 @@
-﻿namespace Practica_Final.Cartas;
+﻿using SFML.Graphics;
+
+namespace Practica_Final.Cartas;
 
 public class Carta_Explosion : Carta
 {
-    public Carta_Explosion(string Nombre) : base("Gato Explosivo")
+    public Carta_Explosion(string Nombre, string  Dibujo) : base(Nombre, Dibujo)
     {
     }
 }
