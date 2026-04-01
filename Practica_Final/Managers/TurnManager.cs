@@ -4,13 +4,18 @@ namespace Practica_Final.Managers;
 
 public class TurnManager
 {
-    private List<Jugador> jugadoresVivos;
-    private int indiceActual;
+    public List<Jugador> jugadoresVivos { get; private set; } = new List<Jugador>();
+    private int indiceActual = 0;
     private int TurnosRestantes;
 
-
+    public static TurnManager Instance { get; private set; } = new();
     public void PasarTUrno()
     {
         
+    }
+
+    public Jugador ObtenerJugadorActual()
+    {
+        return jugadoresVivos[indiceActual];
     }
 }

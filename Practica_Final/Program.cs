@@ -9,6 +9,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        Interfaz.Interfaz interfaz = new Interfaz.Interfaz();
         Mazo<Carta> Mazo = new Mazo<Carta>();
         Mazo.Baraja = CreacionMazo.Instancia.PrepararMazo(4);
         Console.WriteLine("_____________________________");
@@ -28,11 +29,13 @@ class Program
         }
         Console.WriteLine("_____________________________");
         Jugador_Humano Jugador_1 = new();
+        TurnManager.Instance.jugadoresVivos.Add(Jugador_1);
         Jugador_1.Mano = MotorJuego.Intancia.RepatirCartas(Mazo);
         foreach (var carta in Jugador_1.Mano)
         {
             Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
         }
+        interfaz.GenerarVentana();
 
     }
 }
