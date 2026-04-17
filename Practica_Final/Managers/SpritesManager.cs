@@ -11,7 +11,9 @@ public class SpritesManager
     {
         if (!cache.ContainsKey(ruta))
         {
-            cache[ruta] = new Texture(ruta);
+            Texture nuevaTextura = new Texture(ruta);
+            nuevaTextura.Smooth = true;
+            cache[ruta] = nuevaTextura;
         }
 
         return cache[ruta];

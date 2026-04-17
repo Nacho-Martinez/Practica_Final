@@ -9,33 +9,27 @@ class Program
 {
     static void Main(string[] args)
     {
-        Interfaz.Interfaz interfaz = new Interfaz.Interfaz();
-        Mazo<Carta> Mazo = new Mazo<Carta>();
-        Mazo.Baraja = CreacionMazo.Instancia.PrepararMazo(4);
-        Console.WriteLine("_____________________________");
-        Console.WriteLine("SIN BARAJAR");
-        Console.WriteLine("_____________________________");
-        foreach (var carta in Mazo.Baraja)
-        {
-            Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
-        }
-        Mazo.Barajar();
-        Console.WriteLine("_____________________________");
-        Console.WriteLine("BARAJADA");
-        Console.WriteLine("_____________________________");
-        foreach (var carta in Mazo.Baraja)
-        {
-            Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
-        }
-        Console.WriteLine("_____________________________");
-        Jugador_Humano Jugador_1 = new();
+        Interfaz.Instancia.CrearVentana();
+        Mazo<Carta>.Instancia.Baraja = CreacionMazo.Instancia.PrepararMazo(4);
+        Mazo<Carta>.Instancia.Barajar();
+        
+        Jugador_Humano Jugador_1 = new("Nacho");
+        Jugador_Humano Jugador_2 = new("Tonto1");
+        Jugador_Humano Jugador_3 = new("Tonto2");
+        Jugador_Humano Jugador_4 = new("Tonto3");
+        
+        //Repartimos Cartas a todos
+        Jugador_1.Mano = MotorJuego.Intancia.RepatirCartas(Mazo<Carta>.Instancia);
+        
+        
+        CreacionMazo.Instancia.MeterBombas(4);
+        Mazo<Carta>.Instancia.Barajar();
         TurnManager.Instance.jugadoresVivos.Add(Jugador_1);
-        Jugador_1.Mano = MotorJuego.Intancia.RepatirCartas(Mazo);
-        foreach (var carta in Jugador_1.Mano)
-        {
-            Console.WriteLine($"Carta : {carta.Nombre} || Sprite: {carta.Dibujo}");
-        }
-        interfaz.GenerarVentana();
+        TurnManager.Instance.jugadoresVivos.Add(Jugador_2);
+        TurnManager.Instance.jugadoresVivos.Add(Jugador_3);
+        TurnManager.Instance.jugadoresVivos.Add(Jugador_4);
+        
+        Interfaz.Instancia.GenerarVentana();
 
     }
 }

@@ -8,5 +8,10 @@ public abstract class Jugador
     public bool Eliminado { get; private set; }
 
     public abstract void IniciarTurno();
-    public abstract void RobarCarta(Carta carta);
+    public abstract void RobarCarta();
+
+    protected Jugador(string nombre)
+    {
+        Nombre = nombre;
+    }
 }

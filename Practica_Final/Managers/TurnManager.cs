@@ -9,7 +9,12 @@ public class TurnManager
     private int TurnosRestantes;
 
     public static TurnManager Instance { get; private set; } = new();
-    public void PasarTUrno()
+    public void PasarTurnoSinRobar()
+    {
+        
+    }
+
+    public void PasarTurno()
     {
         
     }

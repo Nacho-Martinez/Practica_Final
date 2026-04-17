@@ -4,6 +4,7 @@ namespace Practica_Final.BarajaCartas;
 
 public class Mazo<T>
 {
+    public static Mazo<T> Instancia { get; private set; }= new Mazo<T>();
     public Stack<T> Baraja { get;  set; } = new();
     private List<T> barajaTemporal = new();
     private Random rand = new();
@@ -31,6 +32,11 @@ public class Mazo<T>
         {
             Baraja.Push(carta);
         }
+    }
+
+    public T CogerPrimeraCarta() 
+    {
+        return Baraja.Pop();
     }
 
 }

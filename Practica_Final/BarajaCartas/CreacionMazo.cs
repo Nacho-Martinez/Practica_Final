@@ -17,9 +17,7 @@ public class CreacionMazo
         string[] dibujosSaltar = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Saltar1.png", "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Saltar2.png"};
         string[] dibujosFuturo = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Futuro1.png", "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Futuro2.png"};
         string[] dibujosNope = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Nope1.png", "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Nope2.png"};
-        string[] dibujosExplosion = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Explosion.png"};
-        string[] dibujosGato = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoTaco.png" ,"C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoSandia.png"," " +
-            "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoBarba.png","C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoPatata.png"};
+        string[] dibujosGato = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoTaco.png" ,"C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoSandia.png", "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoBarba.png","C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\GatoPatata.png"};
         
         AgregarVarias(4,dibujosAtaque, (r) => new Carta_Ataque("Carta_Ataque", r));
         AgregarVarias(4,dibujosFavor, (r) => new Carta_Favor("Carta_Favor", r));
@@ -35,7 +33,6 @@ public class CreacionMazo
         int defuserSobrantes = 6 - numeroJugadores;
         
         AgregarVarias(defuserSobrantes,dibujosDefuser, (r) => new Carta_Defuser("Carta_Defuser", r));
-        AgregarVarias(numeroJugadores-1,dibujosExplosion, (r) => new Carta_Explosion("Carta_Explosion", r));
 
         return barajaTemporal;
 
@@ -49,4 +46,16 @@ public class CreacionMazo
             barajaTemporal.Push(creador(rutaAleatoria));
         }
     }
+
+    public void MeterBombas(int numeroJugadores)
+    {
+        
+        string[] dibujosExplosion = { "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Explosion.png"};
+        for (int i = 0; i < numeroJugadores - 1; i++)
+        {
+            Carta_Explosion nuevaBomba = new Carta_Explosion("Carta_Explosion", dibujosExplosion[0]);
+            Mazo<Carta>.Instancia.Baraja.Push(nuevaBomba);
+        }
+    }
+    
 }

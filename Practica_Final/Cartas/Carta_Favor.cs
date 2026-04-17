@@ -15,7 +15,7 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
         throw new NotImplementedException();
     }
 
-    public Jugador ElegirObjetivo()
+    public void ElegirObjetivo()
     {
         throw new NotImplementedException();
     }

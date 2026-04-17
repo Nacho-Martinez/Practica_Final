@@ -8,5 +8,5 @@ public interface IObjetivo
 {
 
 
-    public Jugador ElegirObjetivo();
+    public void ElegirObjetivo();
 }

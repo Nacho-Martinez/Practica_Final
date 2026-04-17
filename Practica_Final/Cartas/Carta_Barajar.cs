@@ -1,4 +1,5 @@
-﻿using Practica_Final.Interfaces;
+﻿using Practica_Final.BarajaCartas;
+using Practica_Final.Interfaces;
 using SFML.Graphics;
 
 namespace Practica_Final.Cartas;
@@ -11,6 +12,6 @@ public class Carta_Barajar :Carta,IJugada
 
     public void JugarCarta()
     {
-        throw new NotImplementedException();
+        Mazo<Carta>.Instancia.Barajar();
     }
 }
