@@ -7,7 +7,33 @@ public class MotorJuego
 {
     public static MotorJuego Intancia { get; private set; }= new();
     private Random rand = new();
-    
+
+    public MotorJuego()
+    {
+        EventManager.Instancia.EnGatoBoom += ProcesarGatoEpxlosivo;
+    }
+
+    private void ProcesarGatoEpxlosivo()
+    {
+        bool tieneDefuser = false;
+        foreach (var carta in TurnManager.Instance.ObtenerJugadorActual().Mano)
+        {
+            if (carta is Carta_Defuser)
+            {
+                carta.Resaltada = true;
+                tieneDefuser = true;
+            }
+        }
+
+        if (!tieneDefuser)
+        {
+            TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.ObtenerJugadorActual());
+            TurnManager.Instance.PasarTurno();
+            return;
+        }
+        StateManager.Intancia.CambiarEstado(StateManager.Estados.DefusandoBomba);
+    }
+
     public List<Carta> RepatirCartas(Mazo<Carta> Mazo)
     {
         List<Carta> listaTemporal = new();

@@ -13,21 +13,24 @@ class Program
         Mazo<Carta>.Instancia.Baraja = CreacionMazo.Instancia.PrepararMazo(4);
         Mazo<Carta>.Instancia.Barajar();
         
-        Jugador_Humano Jugador_1 = new("Nacho");
-        Jugador_Humano Jugador_2 = new("Tonto1");
-        Jugador_Humano Jugador_3 = new("Tonto2");
-        Jugador_Humano Jugador_4 = new("Tonto3");
+        Jugador_Humano jugador1 = new("Nacho");
+        Jugador_Humano jugador2 = new("Tonto1");
+        Jugador_Humano jugador3 = new("Tonto2");
+        Jugador_Humano jugador4 = new("Tonto3");
         
         //Repartimos Cartas a todos
-        Jugador_1.Mano = MotorJuego.Intancia.RepatirCartas(Mazo<Carta>.Instancia);
+        jugador1.Mano = MotorJuego.Intancia.RepatirCartas(Mazo<Carta>.Instancia);
+        jugador2.Mano = MotorJuego.Intancia.RepatirCartas(Mazo<Carta>.Instancia);
+        jugador3.Mano = MotorJuego.Intancia.RepatirCartas(Mazo<Carta>.Instancia);
+        jugador4.Mano = MotorJuego.Intancia.RepatirCartas(Mazo<Carta>.Instancia);
         
         
         CreacionMazo.Instancia.MeterBombas(4);
         Mazo<Carta>.Instancia.Barajar();
-        TurnManager.Instance.jugadoresVivos.Add(Jugador_1);
-        TurnManager.Instance.jugadoresVivos.Add(Jugador_2);
-        TurnManager.Instance.jugadoresVivos.Add(Jugador_3);
-        TurnManager.Instance.jugadoresVivos.Add(Jugador_4);
+        TurnManager.Instance.jugadoresVivos.Add(jugador1);
+        TurnManager.Instance.jugadoresVivos.Add(jugador2);
+        TurnManager.Instance.jugadoresVivos.Add(jugador3);
+        TurnManager.Instance.jugadoresVivos.Add(jugador4);
         
         Interfaz.Instancia.GenerarVentana();
 

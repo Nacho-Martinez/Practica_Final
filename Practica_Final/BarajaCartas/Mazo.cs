@@ -1,13 +1,48 @@
 ﻿using Practica_Final.Cartas;
+using Practica_Final.Managers;
 
 namespace Practica_Final.BarajaCartas;
 
-public class Mazo<T>
+public class Mazo<T> where T : Carta
 {
     public static Mazo<T> Instancia { get; private set; }= new Mazo<T>();
     public Stack<T> Baraja { get;  set; } = new();
     private List<T> barajaTemporal = new();
     private Random rand = new();
+    private Mazo()
+    {
+        EventManager.Instancia.EnSigueinteTurno += RobarInicioTurno;
+        EventManager.Instancia.EnInsercionRealizada += InsertarCarta;
+    }
+
+    private void InsertarCarta(int indice)
+    {
+        barajaTemporal.Clear();
+        foreach (var carta in Baraja)
+        {
+            barajaTemporal.Add(carta);
+        }
+        T bombaConvertida = (T)Interfaz.Instancia.cartaBomba;
+        barajaTemporal.Insert(indice,bombaConvertida);
+        Baraja.Clear();
+        foreach (var c in barajaTemporal)
+        {
+            Baraja.Push(c);
+        }
+    }
+
+    private void RobarInicioTurno()
+    {
+        Carta cartaRobar = CogerPrimeraCarta();
+        if (cartaRobar is Carta_Explosion)
+        {
+            Interfaz.Instancia.cartaBomba = cartaRobar;
+            EventManager.Instancia.GatoBoom();
+            return;
+        }
+        TurnManager.Instance.ObtenerJugadorActual().Mano.Add(cartaRobar);
+        
+    }
 
     public void Barajar()
     {
@@ -37,6 +72,16 @@ public class Mazo<T>
     public T CogerPrimeraCarta() 
     {
         return Baraja.Pop();
+    }
+
+    public List<T> DevolverMazoTemporal()
+    {
+        List<T> listaTemp = new();
+        foreach (var carta in Baraja)
+        {
+            listaTemp.Add(carta);
+        }
+        return listaTemp;
     }
 
 }

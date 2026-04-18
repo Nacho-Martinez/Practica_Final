@@ -14,6 +14,12 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
 
     public void JugarCarta()
     {
+        if (TurnManager.Instance.ObtenerJugadorActual() is not Jugador_Humano)
+        {
+            //Elije objetivo aleatorio que no sea el
+
+            return;
+        }
         Interfaz.Instancia.IndiceEnemigo = 0;
         StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoAtaque);
         EventManager.Instancia.EnJugadorSeleccionado += ElegirObjetivo;
@@ -27,6 +33,8 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
         EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
         StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+        
+        TurnManager.Instance.PasarTurno();
     }
 
     public void ElegirObjetivo()

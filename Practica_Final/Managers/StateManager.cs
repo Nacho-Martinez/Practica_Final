@@ -7,7 +7,10 @@ public class StateManager
     public enum Estados
     {
         Normal,
-        EsperandoAtaque
+        EsperandoAtaque,
+        ViendoFuturo,
+        DefusandoBomba,
+        InsertandoBomba
     };
 
     public Estados EstadoActual { get; private set; } = Estados.Normal;

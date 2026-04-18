@@ -8,7 +8,11 @@ public class EventManager
     
     public event Action EnJugadorSeleccionado;
     public event Action<Jugador> EnJugadorCOnfirmado;
-
+    public event Action<int> EnInsercionRealizada;
+    public event Action EnSigueinteTurno;
+    public event Action EnGatoBoom;
+    
+    
 
     
     public void JugadorSeleccionado()
@@ -20,4 +24,21 @@ public class EventManager
     {
         EnJugadorCOnfirmado?.Invoke(jugador);
     }
+
+    public void SiguienteTurno()
+    {
+        EnSigueinteTurno?.Invoke();
+    }
+
+    public void GatoBoom()
+    {
+        EnGatoBoom?.Invoke();
+    }
+
+    public void Insercion(int indice)
+    {
+        EnInsercionRealizada?.Invoke(indice);
+    }
+
+    
 }
