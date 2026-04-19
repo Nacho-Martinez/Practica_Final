@@ -14,7 +14,7 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
 
     public void JugarCarta()
     {
-        if (TurnManager.Instance.ObtenerJugadorActual() is not Jugador_Humano)
+        if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
         {
             //Elije objetivo aleatorio que no sea el
 
@@ -28,13 +28,33 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
 
     private void Logica(Jugador objetivo)
     {
-        objetivo.Mano.Add(Mazo<Carta>.Instancia.CogerPrimeraCarta());
-        objetivo.Mano.Add(Mazo<Carta>.Instancia.CogerPrimeraCarta());
+        for (int i = 0; i < 2; i++)
+        {
+            Carta cartaRobada = Mazo<Carta>.Instancia.Baraja.Pop();
+
+            if (cartaRobada is Carta_Explosion)
+            {
+                Interfaz.Instancia.cartaBomba = cartaRobada;
+                
+                StateManager.Intancia.CambiarEstado(StateManager.Estados.DefusandoBomba);
+                TurnManager.Instance.DarTurno(objetivo);
+                EventManager.Instancia.GatoBoom();
+
+                return;
+                
+            }
+            else
+            {
+                objetivo.Mano.Add(cartaRobada);
+            }
+        }
         EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
-        StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
-        
-        TurnManager.Instance.PasarTurno();
+        if(StateManager.Intancia.EstadoActual != StateManager.Estados.DefusandoBomba)
+        {
+            StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+            TurnManager.Instance.PasarTurnoSinRobar();
+        }
     }
 
     public void ElegirObjetivo()

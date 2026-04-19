@@ -13,10 +13,10 @@ public class MotorJuego
         EventManager.Instancia.EnGatoBoom += ProcesarGatoEpxlosivo;
     }
 
-    private void ProcesarGatoEpxlosivo()
+    public void ProcesarGatoEpxlosivo()
     {
         bool tieneDefuser = false;
-        foreach (var carta in TurnManager.Instance.ObtenerJugadorActual().Mano)
+        foreach (var carta in TurnManager.Instance.JugadorActual.Mano)
         {
             if (carta is Carta_Defuser)
             {
@@ -27,7 +27,7 @@ public class MotorJuego
 
         if (!tieneDefuser)
         {
-            TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.ObtenerJugadorActual());
+            TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.JugadorActual);
             TurnManager.Instance.PasarTurno();
             return;
         }

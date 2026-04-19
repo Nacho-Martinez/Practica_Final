@@ -49,7 +49,7 @@ public class Interfaz
            Ventana.Clear(new Color(30,30,30));
            Ventana.Draw(BotonJugar);
            Ventana.Draw(BotonSaltarTurno);
-           JugadorActual = TurnManager.Instance.ObtenerJugadorActual();
+           JugadorActual = TurnManager.Instance.JugadorActual;
            
            float margenIzquierdo = 100f;
            float anchoDisponible = ventanaAncho - (margenIzquierdo * 2);
@@ -83,6 +83,7 @@ public class Interfaz
            EsperandoAtaque();
             GatoBoom();
             InsertarBomba();
+            MostrarTurnoActual();
             
            Ventana.Display();
         }
@@ -213,8 +214,8 @@ public class Interfaz
         flechaIzquierda.FillColor = Color.White;
         flechaIzquierda.Position = new Vector2f(425, 300);
         Ventana.Draw(flechaIzquierda);
-
-        Text numero = new Text(fuente, $"{IndiceInsercion}");
+        int indiceVisual = Mazo<Carta>.Instancia.Baraja.Count - IndiceInsercion;
+        Text numero = new Text(fuente, $"{indiceVisual}");
         numero.Position = new Vector2f(525, 275);
         Ventana.Draw(numero);
     }
@@ -225,5 +226,21 @@ public class Interfaz
         IndiceInsercion = clave > 0
             ? (IndiceInsercion - 1 + Mazo<Carta>.Instancia.Baraja.Count) % Mazo<Carta>.Instancia.Baraja.Count
             : (IndiceInsercion + 1) % Mazo<Carta>.Instancia.Baraja.Count;
+    }
+
+    private void MostrarTurnoActual()
+    {
+        if (JugadorActual == null) return;
+        Text textoTurno = new Text(fuente, $"Turno de: {JugadorActual.Nombre}");
+        textoTurno.CharacterSize = 24;
+        textoTurno.FillColor = Color.Yellow; 
+        textoTurno.Position = new Vector2f(950, 30); 
+
+        Ventana.Draw(textoTurno);
+    }
+
+    public void ResterarIndiceInsercion()
+    {
+        IndiceInsercion = 1;
     }
 }

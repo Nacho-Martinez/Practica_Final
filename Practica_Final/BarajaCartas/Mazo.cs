@@ -1,4 +1,5 @@
 ﻿using Practica_Final.Cartas;
+using Practica_Final.Jugadores;
 using Practica_Final.Managers;
 
 namespace Practica_Final.BarajaCartas;
@@ -11,7 +12,7 @@ public class Mazo<T> where T : Carta
     private Random rand = new();
     private Mazo()
     {
-        EventManager.Instancia.EnSigueinteTurno += RobarInicioTurno;
+        EventManager.Instancia.EnSigueinteTurno += Robar;
         EventManager.Instancia.EnInsercionRealizada += InsertarCarta;
     }
 
@@ -31,16 +32,16 @@ public class Mazo<T> where T : Carta
         }
     }
 
-    private void RobarInicioTurno()
+    private void Robar()
     {
-        Carta cartaRobar = CogerPrimeraCarta();
+        Carta cartaRobar = DarPrimeraCarta();
         if (cartaRobar is Carta_Explosion)
         {
             Interfaz.Instancia.cartaBomba = cartaRobar;
             EventManager.Instancia.GatoBoom();
             return;
         }
-        TurnManager.Instance.ObtenerJugadorActual().Mano.Add(cartaRobar);
+        TurnManager.Instance.JugadorActual.Mano.Add(cartaRobar);
         
     }
 
@@ -69,8 +70,10 @@ public class Mazo<T> where T : Carta
         }
     }
 
-    public T CogerPrimeraCarta() 
+    public  T DarPrimeraCarta() 
     {
+        //Buen sitio para meter gestion de errores
+        if (Baraja.Count == 0) return null;
         return Baraja.Pop();
     }
 

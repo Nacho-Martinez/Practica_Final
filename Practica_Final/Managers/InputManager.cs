@@ -51,11 +51,11 @@ public class InputManager
             {
                 if (e.Code == Keyboard.Key.Right)
                 {
-                    Interfaz.Instancia.ModificarIndiceInsercion(-1);
+                    Interfaz.Instancia.ModificarIndiceInsercion(+1);
                 }
                 if (e.Code == Keyboard.Key.Left)
                 {
-                    Interfaz.Instancia.ModificarIndiceInsercion(+1);
+                    Interfaz.Instancia.ModificarIndiceInsercion(-1);
                 }
             }
 
@@ -80,6 +80,7 @@ public class InputManager
                 if (e.Code == Keyboard.Key.Enter)
                 {
                  EventManager.Instancia.Insercion(Interfaz.Instancia.IndiceInsercion);
+                 Interfaz.Instancia.ResterarIndiceInsercion();
                  StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
                  EventManager.Instancia.SiguienteTurno();
                  TurnManager.Instance.PasarTurno();
