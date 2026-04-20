@@ -50,11 +50,9 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
         }
         EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
-        if(StateManager.Intancia.EstadoActual != StateManager.Estados.DefusandoBomba)
-        {
-            StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
-            TurnManager.Instance.PasarTurnoSinRobar();
-        }
+        StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+        TurnManager.Instance.PasarTurnoSinRobar();
+        
     }
 
     public void ElegirObjetivo()

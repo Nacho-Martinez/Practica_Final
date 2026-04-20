@@ -11,6 +11,7 @@ public class EventManager
     public event Action<int> EnInsercionRealizada;
     public event Action EnSigueinteTurno;
     public event Action EnGatoBoom;
+    public event Action EnCambioDeEstado;
     
     
 
@@ -40,5 +41,8 @@ public class EventManager
         EnInsercionRealizada?.Invoke(indice);
     }
 
-    
+    public void CambioEstado()
+    {
+        EnCambioDeEstado?.Invoke();
+    }
 }

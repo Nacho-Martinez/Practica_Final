@@ -27,8 +27,9 @@ public class MotorJuego
 
         if (!tieneDefuser)
         {
+            StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
             TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.JugadorActual);
-            TurnManager.Instance.PasarTurno();
+            //TurnManager.Instance.PasarTurno();
             return;
         }
         StateManager.Intancia.CambiarEstado(StateManager.Estados.DefusandoBomba);
