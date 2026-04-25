@@ -1,26 +1,37 @@
 ﻿using Practica_Final.Cartas;
+using Practica_Final.InteligenciaArtificial;
+using Practica_Final.Interfaces;
 using Practica_Final.Jugadores;
 using Practica_Final.Managers;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace Practica_Final.Interfaces;
+namespace Practica_Final.Estados;
 
-public class Estado_DefusandoBomba : IEstado
+public class Estado_EsperandoTrasJugada : IEstado
 {
     private bool mousePulsado = false;
     private Jugador jugadorActual;
+    private  Clock cronometro= new Clock();
+    private bool relojIniciado = false;
+    private Random rand = new Random();
+    private bool iaHaJugadoNope = false;
+    private bool seHaIntentadoJugarNope = false;
+
+    public Estado_EsperandoTrasJugada()
+    {
+        EventManager.Instancia.EnSiguienteTurno += () => iaHaJugadoNope = false;
+    }
+    
     public void Dibujar()
     {
-        
-        RectangleShape carta = new RectangleShape(new Vector2f(200,350));
-        carta.Position = new Vector2f(400,50);
-        carta.Texture = SpritesManager.Instancia.ConseguirTextura(Interfaz.Instancia.cartaBomba.Dibujo);
-        Interfaz.Instancia.Ventana.Draw(carta);
-        
-        jugadorActual = TurnManager.Instance.JugadorActual;
-           
+        if (!relojIniciado)
+        {
+            cronometro.Restart();
+            relojIniciado = true;
+        }
+        jugadorActual = TurnManager.Instance.DevolverPrimerJugadorHumano();
         float margenIzquierdo = 100f;
         float anchoDisponible = Interfaz.Instancia.VentanaAncho - (margenIzquierdo * 2);
         float anchoCarta = 100f;
@@ -49,15 +60,40 @@ public class Estado_DefusandoBomba : IEstado
                
             Interfaz.Instancia.Ventana.Draw(rect);
         }
+        
+        if (cronometro.ElapsedTime.AsSeconds() > 3f)
+        {
+            relojIniciado = false;
+            if (!ReactManager.Instance.EfectoCancelado)
+            {
+
+                if (ReactManager.Instance.JugadaPendiente is IJugada jugada)
+                {
+                    jugada.JugarCarta();
+                }
+
+                if (StateManager.Intancia.EstadoActual is Estado_EsperandoTrasJugada)
+                {
+                    StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+                }
+            }
+            else
+            {
+                Console.WriteLine("[LOG] La carta fue NOPED. No hace nada.");
+                StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+            }
+            ReactManager.Instance.ResetearEfecto();
+            iaHaJugadoNope = false;
+            seHaIntentadoJugarNope = false;
+        }
     }
 
     public void Inputs()
     {
-            if (Mouse.IsButtonPressed(Mouse.Button.Left))
+        if (Mouse.IsButtonPressed(Mouse.Button.Left))
             {
                 if (mousePulsado) return;
                 mousePulsado = true;
-                
                     List<Carta> cartasElegidas = new();
                     Vector2i posPixel = Mouse.GetPosition(Interfaz.Instancia.Ventana);
                     Vector2f posMundo = Interfaz.Instancia.Ventana.MapPixelToCoords(posPixel);
@@ -67,32 +103,24 @@ public class Estado_DefusandoBomba : IEstado
                             return;
                         foreach (var indice in Interfaz.Instancia.IndicesSeleccionados)
                         {
-                            cartasElegidas.Add(Interfaz.Instancia.JugadorActual.Mano[indice]);
+                            cartasElegidas.Add(jugadorActual.Mano[indice]);
                         }
 
                         int cantidad = cartasElegidas.Count;
                         if (cantidad == 1)
                         {
                             Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
-                            if (cartasElegidas[0] is Carta_Defuser && cartasElegidas[0] is IJugada cartaParaJugar)
+                            if (cartasElegidas[0] is IJugada cartaParaJugar && cartasElegidas[0] is Carta_Nope)
                             {
                                 cartaParaJugar.JugarCarta();
-                                foreach (var car in TurnManager.Instance.JugadorActual.Mano)
-                                {
-                                    car.Resaltada = false;
-                                }
-                                ReactManager.Instance.ProcesarJugada(Interfaz.Instancia.JugadorActual);
+                                ReactManager.Instance.ProcesarJugada(jugadorActual);
+                                cronometro.Restart();
                             }
                         }
-                        else
-                        {
-                            return;
-                        }
-
                     }
                     else if (posMundo.Y > 600 && posMundo.Y < 750)
                     {
-                        for (int i = Interfaz.Instancia.JugadorActual.Mano.Count - 1; i >= 0; i--)
+                        for (int i =  jugadorActual.Mano.Count - 1; i >= 0; i--)
                         {
                             float posX = 100 + (i * Interfaz.Instancia.Separacion);
                             float posY = Interfaz.Instancia.IndicesSeleccionados.Contains(i) ? 570f : 600f;
@@ -107,34 +135,61 @@ public class Estado_DefusandoBomba : IEstado
                                 {
                                     Interfaz.Instancia.IndicesSeleccionados.Add(i);
                                 }
-
                                 break;
                             }
                         }
                     }
-                
             }
             else
             {
                 mousePulsado = false;
             }
-        
     }
 
     public void ComportameintoIA()
     {
-        if (TurnManager.Instance.JugadorActual is Jugador_Robot jugadorRobot)
+        if (iaHaJugadoNope || seHaIntentadoJugarNope) return;
+        foreach (var jugador in TurnManager.Instance.jugadoresVivos )
         {
-            foreach (var carta in jugadorRobot.Mano)
+            if (jugador  is Jugador_Robot jugadorRobot)
             {
-                if (carta is Carta_Defuser)
+                if (jugadorRobot.MiComportamiento is ComportamientoFacil)
                 {
-                    jugadorRobot.JugarCarta(carta);
+                    JugarNope(2,jugadorRobot);   
+                }
+                if (jugadorRobot.MiComportamiento is ComportamientoMedio)
+                {
+                    JugarNope(3,jugadorRobot);   
+                }
+                if (jugadorRobot.MiComportamiento is ComportamientoDificil)
+                {
+                    JugarNope(4,jugadorRobot);   
+                }
+            }
+        }
+
+        seHaIntentadoJugarNope = true;
+
+    }
+
+
+
+    public void JugarNope(int porcentaje,Jugador_Robot robot)
+    {
+        int numero = rand.Next(0, 11);
+        if (numero <= porcentaje)
+        {
+            foreach (var carta in robot.Mano)
+            {
+                if (carta is Carta_Nope nope)
+                {
+                    nope.JugarCarta();
+                    ReactManager.Instance.ProcesarJugada(robot,carta);
+                    iaHaJugadoNope = true;
+                    cronometro.Restart();
                     return;
                 }
             }
         }
-        
-        Console.WriteLine($"[IA] La ia {TurnManager.Instance.JugadorActual.Nombre} no ha encontrado un defuser en su mano");
     }
 }

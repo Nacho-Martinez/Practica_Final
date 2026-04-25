@@ -5,4 +5,6 @@ public interface IEstado
     public void Dibujar();
     public void Inputs();
 
+    public void ComportameintoIA();
+
 }

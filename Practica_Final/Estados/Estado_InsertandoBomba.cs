@@ -10,6 +10,7 @@ namespace Practica_Final.Estados;
 
 public class Estado_InsertandoBomba : IEstado
 {
+    private Random rand = new Random();
     private bool teclaBloqueada = false;
     public void Dibujar()
     {
@@ -65,7 +66,7 @@ public class Estado_InsertandoBomba : IEstado
                     Interfaz.Instancia.ResterarIndiceInsercion();
                     Interfaz.Instancia.IndicesSeleccionados.Clear();
                     StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
-                    EventManager.Instancia.SiguienteTurno();
+                    EventManager.Instancia.SiguienteTurnoParaRobar();
                     TurnManager.Instance.PasarTurno();
                 }
 
@@ -76,5 +77,14 @@ public class Estado_InsertandoBomba : IEstado
         {
             teclaBloqueada = false; 
         }
+    }
+
+    public void ComportameintoIA()
+    {
+        int randNum = rand.Next(0, Mazo<Carta>.Instancia.Baraja.Count);
+        EventManager.Instancia.Insercion(randNum);
+        StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+        EventManager.Instancia.SiguienteTurnoParaRobar();
+        TurnManager.Instance.PasarTurno();
     }
 }

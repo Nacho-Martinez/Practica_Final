@@ -1,4 +1,5 @@
 ﻿using Practica_Final.Cartas;
+using Practica_Final.InteligenciaArtificial;
 using Practica_Final.Interfaces;
 using Practica_Final.Jugadores;
 using Practica_Final.Managers;
@@ -14,8 +15,7 @@ public class Estado_Normal : IEstado
     private Jugador jugadorActual;
     public void Dibujar()
     {
-        jugadorActual = TurnManager.Instance.JugadorActual;
-           
+        jugadorActual = TurnManager.Instance.DevolverPrimerJugadorHumano();
         float margenIzquierdo = 100f;
         float anchoDisponible = Interfaz.Instancia.VentanaAncho - (margenIzquierdo * 2);
         float anchoCarta = 100f;
@@ -62,24 +62,44 @@ public class Estado_Normal : IEstado
                             return;
                         foreach (var indice in Interfaz.Instancia.IndicesSeleccionados)
                         {
-                            cartasElegidas.Add(Interfaz.Instancia.JugadorActual.Mano[indice]);
+                            cartasElegidas.Add( jugadorActual.Mano[indice]);
                         }
 
                         int cantidad = cartasElegidas.Count;
                         if (cantidad == 1)
                         {
                             Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
-                            if (cartasElegidas[0] is IJugada cartaParaJugar)
+                            if (cartasElegidas[0] is not IJugada cartaParaJugar || cartasElegidas[0] is Carta_Gato ||
+                                cartasElegidas[0] is Carta_Defuser || cartasElegidas[0] is Carta_Nope) return;
+                            
+                            ReactManager.Instance.MeterJugadaEnCola( cartasElegidas[0]);
+                            ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
+                            StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                        }
+                        else if (cantidad == 2)
+                        {
+                            Carta_Gato.TiposGato tipoRequerido = Carta_Gato.TiposGato.Ninguno;
+                            if (cartasElegidas[0] is Carta_Gato cartaGato)
                             {
-                                cartaParaJugar.JugarCarta();
+                                tipoRequerido = cartaGato.tipoGato;
                             }
 
-                            InputManager.Instance.ProcesarJugada(Interfaz.Instancia.JugadorActual);
-                        }
-                        //AQUI VAN LOS FILTROS PARA LAS CARTAS DE GATOS ETC
-                        else
-                        {
-                            Console.WriteLine($"[LOG] Logica aun no hecha");
+                            foreach (var carta in cartasElegidas)
+                            {
+                                if (carta is not Carta_Gato)
+                                {
+                                    return;
+                                }
+                            }
+
+                            if (cartasElegidas[0] is IJugada cartaParaJugar && cartasElegidas[1]is Carta_Gato cartaComprobarTipo)
+                            {
+                                if (tipoRequerido == Carta_Gato.TiposGato.Ninguno ||
+                                    cartaComprobarTipo.tipoGato != tipoRequerido) return;
+                                ReactManager.Instance.MeterJugadaEnCola( cartasElegidas[0]);
+                                ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
+                                StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                            }
                         }
 
                     }
@@ -89,7 +109,7 @@ public class Estado_Normal : IEstado
                     }
                     else if (posMundo.Y > 600 && posMundo.Y < 750)
                     {
-                        for (int i = Interfaz.Instancia.JugadorActual.Mano.Count - 1; i >= 0; i--)
+                        for (int i =  jugadorActual.Mano.Count - 1; i >= 0; i--)
                         {
                             float posX = 100 + (i * Interfaz.Instancia.Separacion);
                             float posY = Interfaz.Instancia.IndicesSeleccionados.Contains(i) ? 570f : 600f;
@@ -115,5 +135,13 @@ public class Estado_Normal : IEstado
                 mousePulsado = false;
             }
         
+    }
+
+    public void ComportameintoIA()
+    {
+        if (TurnManager.Instance.JugadorActual is Jugador_Robot iaActual)
+        {
+            iaActual.JugarCarta();
+        }
     }
 }

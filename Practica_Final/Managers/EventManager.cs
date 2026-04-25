@@ -9,10 +9,10 @@ public class EventManager
     public event Action EnJugadorSeleccionado;
     public event Action<Jugador> EnJugadorCOnfirmado;
     public event Action<int> EnInsercionRealizada;
-    public event Action EnSigueinteTurno;
+    public event Action EnSigueinteTurnoParaRobar;
     public event Action EnGatoBoom;
-    public event Action EnCambioDeEstado;
-    
+    public event Action EnCartaDada;
+    public event Action EnSiguienteTurno;
     
 
     
@@ -26,9 +26,9 @@ public class EventManager
         EnJugadorCOnfirmado?.Invoke(jugador);
     }
 
-    public void SiguienteTurno()
+    public void SiguienteTurnoParaRobar()
     {
-        EnSigueinteTurno?.Invoke();
+        EnSigueinteTurnoParaRobar?.Invoke();
     }
 
     public void GatoBoom()
@@ -41,8 +41,15 @@ public class EventManager
         EnInsercionRealizada?.Invoke(indice);
     }
 
-    public void CambioEstado()
+    public void CartaDada()
     {
-        EnCambioDeEstado?.Invoke();
+        Console.WriteLine("Vento de carta dada se ha lanzado");
+        EnCartaDada?.Invoke();
     }
+
+    public void SiguenteTurno()
+    {
+        EnSiguienteTurno?.Invoke();
+    }
+    
 }

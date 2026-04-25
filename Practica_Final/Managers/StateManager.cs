@@ -13,7 +13,9 @@ public class StateManager
         EsperandoAtaque,
         ViendoFuturo,
         DefusandoBomba,
-        InsertandoBomba
+        InsertandoBomba,
+        DandoFavor,
+        EsperandoTrasJugada
     };
 
     public IEstado EstadoActual { get; private set; } = new Estado_Normal();
@@ -27,7 +29,9 @@ public class StateManager
             { Estados.EsperandoAtaque, new Estado_EsperandoAtaque() },
             { Estados.ViendoFuturo, new Estado_ViendoFuturo() },
             { Estados.DefusandoBomba, new Estado_DefusandoBomba() },
-            { Estados.InsertandoBomba, new Estado_InsertandoBomba() }
+            { Estados.InsertandoBomba, new Estado_InsertandoBomba() },
+            { Estados.DandoFavor , new Estado_DandoFavor() },
+            { Estados.EsperandoTrasJugada , new Estado_EsperandoTrasJugada()}
         };
         EstadoActual = diccionarioEstados[Estados.Normal]; 
     }
@@ -35,7 +39,6 @@ public class StateManager
     public void CambiarEstado(Estados estado)
     {
         EstadoActual = diccionarioEstados[estado];
-        EventManager.Instancia.CambioEstado();
         
     }
 }

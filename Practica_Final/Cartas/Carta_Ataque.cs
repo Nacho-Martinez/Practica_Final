@@ -8,6 +8,7 @@ namespace Practica_Final.Cartas;
 
 public class Carta_Ataque : Carta ,IJugada,IObjetivo
 {
+    private Random rand = new Random();
     public Carta_Ataque(string Nombre, string  Dibujo) : base(Nombre, Dibujo)
     {
     }
@@ -16,8 +17,14 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
     {
         if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
         {
-            //Elije objetivo aleatorio que no sea el
-
+            int indiceEnemigo;
+            do
+            {
+             indiceEnemigo = rand.Next(0, TurnManager.Instance.jugadoresVivos.Count);
+                
+            } while (TurnManager.Instance.jugadoresVivos[indiceEnemigo] == TurnManager.Instance.JugadorActual);
+            Console.WriteLine($"Jugador atacado:{TurnManager.Instance.jugadoresVivos[indiceEnemigo].Nombre}");
+            Logica(TurnManager.Instance.jugadoresVivos[indiceEnemigo]);
             return;
         }
         Interfaz.Instancia.IndiceEnemigo = 0;

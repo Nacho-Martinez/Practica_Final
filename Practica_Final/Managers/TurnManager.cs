@@ -9,26 +9,25 @@ public class TurnManager
     private int turnosRestantes;
     private bool tieneQueRobar;
     public Jugador JugadorActual { get; private set; } 
+    public Jugador JugadorPendienteDeFavor { get; private set; } 
 
     public static TurnManager Instance { get; private set; } = new();
 
     public void PasarTurnoSinRobar()
     {
         indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
+        JugadorActual = jugadoresVivos[indiceActual];
+        EventManager.Instancia.SiguenteTurno();
     }
     public void PasarTurno()
     {
         indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
         JugadorActual = jugadoresVivos[indiceActual];
-        EventManager.Instancia.SiguienteTurno();
+        EventManager.Instancia.SiguienteTurnoParaRobar();
+        EventManager.Instancia.SiguenteTurno();
     }
 
-    public Jugador ObtenerJugadorActual()
-    {
-        JugadorActual = jugadoresVivos[indiceActual];
-        return jugadoresVivos[indiceActual];
-    }
-
+    
     public void DarTurno(Jugador jugador)
     {
         JugadorActual = jugador;
@@ -36,5 +35,23 @@ public class TurnManager
     public void InicializarJugadorActual()
     {
         JugadorActual = jugadoresVivos[0];
+    }
+
+    public void AsignarJugadorPendienteDeFavor(Jugador jugador)
+    {
+        JugadorPendienteDeFavor = jugador;
+    }
+
+    public Jugador DevolverPrimerJugadorHumano()
+    {
+        foreach (var jugador in jugadoresVivos)
+        {
+            if (jugador is Jugador_Humano)
+            {
+                return jugador;
+            }
+        }
+
+        return null;
     }
 }

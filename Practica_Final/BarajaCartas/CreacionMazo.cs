@@ -23,12 +23,14 @@ public class CreacionMazo
         AgregarVarias(4,dibujosFavor, (r) => new Carta_Favor("Carta_Favor", r));
         AgregarVarias(4,dibujosBarajar, (r) => new Carta_Barajar("Carta_Barajar", r));
         AgregarVarias(4,dibujosSaltar, (r) => new Carta_Saltar("Carta_Saltar", r));
-        AgregarVarias(4,dibujosFuturo, (r) => new Carta_Futuro("Carta_Futuro", r));
-        AgregarVarias(4,dibujosNope, (r) => new Carta_Nope("Carta_Nope", r));
-        string[] tiposGatos = { "GatoTaco", "GatoSandia", "GatoBarba", "GatoPatata" };
+        AgregarVarias(5,dibujosFuturo, (r) => new Carta_Futuro("Carta_Futuro", r));
+        AgregarVarias(5,dibujosNope, (r) => new Carta_Nope("Carta_Nope", r));
+        Carta_Gato.TiposGato[] tiposGatos = { Carta_Gato.TiposGato.GatoTaco, Carta_Gato.TiposGato.GatoSandia,Carta_Gato.TiposGato.GatoBarba, Carta_Gato.TiposGato.GatoPatata};
+        int i = 0;
         foreach (var tipos in tiposGatos)
         {
-            AgregarVarias(4,dibujosGato, (r) => new Carta_Gato(tipos, r));
+            AgregarVariasGatos(5,dibujosGato[i],tipos, (r,t) => new Carta_Gato(t.ToString(), r,t));
+            i++;
         }
         int defuserSobrantes = 6 - numeroJugadores;
         
@@ -38,12 +40,28 @@ public class CreacionMazo
 
     }
 
+    private void AgregarVarias(int cantidad, string poolDeRutas, Func<string, Carta_Gato> creador)
+    {
+        for (int i = 0; i < cantidad; i++)
+        {
+            barajaTemporal.Push(creador(poolDeRutas));
+        }
+    }
+
     private void AgregarVarias(int cantidad,string[] poolDeRutas, Func<string,Carta> creador)
     {
         for (int i = 0; i < cantidad; i++)
         {
             string rutaAleatoria = poolDeRutas[rand.Next(poolDeRutas.Length)];
             barajaTemporal.Push(creador(rutaAleatoria));
+        }
+    }
+    
+    private void AgregarVariasGatos(int cantidad, string ruta, Carta_Gato.TiposGato tipo, Func<string, Carta_Gato.TiposGato, Carta_Gato> creador)
+    {
+        for (int i = 0; i < cantidad; i++)
+        {
+            barajaTemporal.Push(creador(ruta, tipo));
         }
     }
 

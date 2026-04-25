@@ -8,17 +8,17 @@ public class Mazo<T> where T : Carta
 {
     public static Mazo<T> Instancia { get; private set; }= new Mazo<T>();
     public Stack<T> Baraja { get;  set; } = new();
-    private List<T> barajaTemporal = new();
     private Random rand = new();
     private Mazo()
     {
-        EventManager.Instancia.EnSigueinteTurno += Robar;
+        EventManager.Instancia.EnSigueinteTurnoParaRobar += Robar;
         EventManager.Instancia.EnInsercionRealizada += InsertarCarta;
     }
 
     private void InsertarCarta(int indice)
     {
-        barajaTemporal.Clear();
+      List<T> barajaTemporal = new();
+        
         foreach (var carta in Baraja)
         {
             barajaTemporal.Add(carta);
@@ -26,7 +26,7 @@ public class Mazo<T> where T : Carta
         T bombaConvertida = (T)Interfaz.Instancia.cartaBomba;
         barajaTemporal.Insert(indice,bombaConvertida);
         Baraja.Clear();
-        foreach (var c in barajaTemporal)
+        foreach (var c in barajaTemporal.AsEnumerable().Reverse())
         {
             Baraja.Push(c);
         }
@@ -47,6 +47,7 @@ public class Mazo<T> where T : Carta
 
     public void Barajar()
     {
+        List<T> barajaTemporal = new();
         foreach (var carta in Baraja)
         {
             barajaTemporal.Add(carta);
@@ -64,7 +65,7 @@ public class Mazo<T> where T : Carta
             // barajaTemporal[n] = value;
         }
         Baraja.Clear();
-        foreach (var carta in barajaTemporal)
+        foreach (var carta in barajaTemporal.AsEnumerable().Reverse())
         {
             Baraja.Push(carta);
         }

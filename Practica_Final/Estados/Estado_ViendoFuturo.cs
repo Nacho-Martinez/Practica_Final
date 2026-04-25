@@ -11,8 +11,18 @@ namespace Practica_Final.Estados;
 public class Estado_ViendoFuturo : IEstado
 {
     private  Clock cronometroFuturo = new Clock();
+    private bool relojIniciado = false;
+    
     public void Dibujar()
     {
+        if (!relojIniciado)
+        {
+            cronometroFuturo.Restart();
+            relojIniciado = true;
+        }
+
+        if (TurnManager.Instance.JugadorActual is Jugador_Robot && cronometroFuturo.ElapsedTime.AsSeconds() < 5f) return;
+        
         List<Carta> listaTemp = new();
         listaTemp = Mazo<Carta>.Instancia.DevolverMazoTemporal();
         RectangleShape panelFondo = new RectangleShape(new Vector2f(900, 700));
@@ -33,7 +43,7 @@ public class Estado_ViendoFuturo : IEstado
         }
         if (cronometroFuturo.ElapsedTime.AsSeconds() > 5f)
         {
-            cronometroFuturo.Restart();
+            relojIniciado = false;
             StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
         }
     }
@@ -41,5 +51,9 @@ public class Estado_ViendoFuturo : IEstado
     public void Inputs()
     {
         //No Puedes hacer inputs de momento en este estado
+    }
+
+    public void ComportameintoIA()
+    {
     }
 }

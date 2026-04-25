@@ -78,4 +78,9 @@ public class Estado_EsperandoAtaque: IEstado
                     teclaBloqueada = false; 
                 }
     }
+
+    public void ComportameintoIA()
+    {
+        throw new NotImplementedException();
+    }
 }

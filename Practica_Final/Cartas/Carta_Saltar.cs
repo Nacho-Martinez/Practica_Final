@@ -1,4 +1,5 @@
 ﻿using Practica_Final.Interfaces;
+using Practica_Final.Managers;
 using SFML.Graphics;
 
 namespace Practica_Final.Cartas;
@@ -11,6 +12,6 @@ public class Carta_Saltar : Carta,IJugada
 
     public void JugarCarta()
     {
-        throw new NotImplementedException();
+        TurnManager.Instance.PasarTurnoSinRobar();
     }
 }
