@@ -15,6 +15,7 @@ public class Estado_Normal : IEstado
     private Jugador jugadorActual;
     public void Dibujar()
     {
+        Interfaz.Instancia.DibujarRivales();
         jugadorActual = TurnManager.Instance.DevolverPrimerJugadorHumano();
         float margenIzquierdo = 100f;
         float anchoDisponible = Interfaz.Instancia.VentanaAncho - (margenIzquierdo * 2);
@@ -68,13 +69,27 @@ public class Estado_Normal : IEstado
                         int cantidad = cartasElegidas.Count;
                         if (cantidad == 1)
                         {
+                            Carta cartaJugada = cartasElegidas[0];
                             Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
+                            
                             if (cartasElegidas[0] is not IJugada cartaParaJugar || cartasElegidas[0] is Carta_Gato ||
                                 cartasElegidas[0] is Carta_Defuser || cartasElegidas[0] is Carta_Nope) return;
                             
-                            ReactManager.Instance.MeterJugadaEnCola( cartasElegidas[0]);
-                            ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
-                            StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                            int indiceEnMano = Interfaz.Instancia.IndicesSeleccionados[0];
+                            float posXInicio = 100f + (indiceEnMano * Interfaz.Instancia.Separacion);
+                            float posYInicio = 570f; 
+                            Vector2f posInicio = new Vector2f(posXInicio, posYInicio);
+                            Vector2f posDestino = new Vector2f(720f, 300f); 
+                            Texture tex = SpritesManager.Instancia.ConseguirTextura(cartaJugada.Dibujo);
+                            
+                            Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
+                            {
+                                
+                                ReactManager.Instance.MeterJugadaEnCola(cartaJugada);
+                                ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
+                                StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                            });
+                            
                         }
                         else if (cantidad == 2)
                         {
@@ -96,9 +111,24 @@ public class Estado_Normal : IEstado
                             {
                                 if (tipoRequerido == Carta_Gato.TiposGato.Ninguno ||
                                     cartaComprobarTipo.tipoGato != tipoRequerido) return;
-                                ReactManager.Instance.MeterJugadaEnCola( cartasElegidas[0]);
-                                ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
-                                StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                                
+                                int indice1 = Interfaz.Instancia.IndicesSeleccionados[0];
+                                int indice2 = Interfaz.Instancia.IndicesSeleccionados[1];
+                                
+                                Vector2f posInicio1 = new Vector2f(100f + (indice1 * Interfaz.Instancia.Separacion), 570f);
+                                Vector2f posInicio2 = new Vector2f(100f + (indice2 * Interfaz.Instancia.Separacion), 570f);
+                                Vector2f posDestino1 = new Vector2f(720f, 300f);
+                                Vector2f posDestino2 = new Vector2f(820f, 300f);
+                                Texture tex1 = SpritesManager.Instancia.ConseguirTextura(cartasElegidas[0].Dibujo);
+                                Texture tex2 = SpritesManager.Instancia.ConseguirTextura(cartasElegidas[1].Dibujo);
+                                
+                                Interfaz.Instancia.LanzarAnimacion(tex2, posInicio2, posDestino2, 0.4f);
+                                Interfaz.Instancia.LanzarAnimacion(tex1, posInicio1, posDestino1, 0.4f, () => 
+                                {
+                                    ReactManager.Instance.MeterJugadaEnCola(cartasElegidas[0]);
+                                    ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
+                                    StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                                });
                             }
                         }
 
@@ -144,4 +174,5 @@ public class Estado_Normal : IEstado
             iaActual.JugarCarta();
         }
     }
+    
 }

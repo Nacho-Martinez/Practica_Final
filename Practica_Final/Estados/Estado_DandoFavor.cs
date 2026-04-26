@@ -15,17 +15,20 @@ public class Estado_DandoFavor : IEstado
     public void Dibujar()
     {
         Jugador jugadorActual = TurnManager.Instance.JugadorActual;
-        RectangleShape panelTexto = new RectangleShape(new Vector2f(600, 200));
-        panelTexto.Position = new Vector2f(400, 300);
-        panelTexto.FillColor = new Color(128, 128, 128, 150); //Gris SemiTransparente
-        panelTexto.OutlineColor = Color.Black;
-        panelTexto.OutlineThickness = 3;
-        Text texto = new Text(Interfaz.Instancia.Fuente, ">>ELIGE CARTA PARA DAR<<");
-        texto.Position = new Vector2f(410, 350);
-        Interfaz.Instancia.Ventana.Draw(panelTexto);
-        Interfaz.Instancia.Ventana.Draw(texto);
-        
-        
+        if (TurnManager.Instance.JugadorActual is not Jugador_Robot)
+        {
+
+            RectangleShape panelTexto = new RectangleShape(new Vector2f(600, 200));
+            panelTexto.Position = new Vector2f(400, 300);
+            panelTexto.FillColor = new Color(128, 128, 128, 150); //Gris SemiTransparente
+            panelTexto.OutlineColor = Color.Black;
+            panelTexto.OutlineThickness = 3;
+            Text texto = new Text(Interfaz.Instancia.Fuente, ">>ELIGE CARTA PARA DAR<<");
+            texto.Position = new Vector2f(410, 350);
+            Interfaz.Instancia.Ventana.Draw(panelTexto);
+            Interfaz.Instancia.Ventana.Draw(texto);
+        }
+
         float margenIzquierdo = 100f;
         float anchoDisponible = Interfaz.Instancia.VentanaAncho - (margenIzquierdo * 2);
         float anchoCarta = 100f;
@@ -77,10 +80,17 @@ public class Estado_DandoFavor : IEstado
                 int cantidad = cartasElegidas.Count;
                 if (cantidad == 1)
                 {
-                    Carta cartaElegida = cartasElegidas[0];      
-                    TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaElegida);
-                    Interfaz.Instancia.JugadorActual.Mano.Remove(cartaElegida);
-                    EventManager.Instancia.CartaDada();
+                    Carta cartaElegida = cartasElegidas[0];     
+                    Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorActual);
+                    Vector2f posDestino = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorPendienteDeFavor);
+                    Texture tex = SpritesManager.Instancia.ConseguirTextura(cartaElegida.Dibujo);
+                    StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+                    Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
+                    {
+                     TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaElegida);
+                     Interfaz.Instancia.JugadorActual.Mano.Remove(cartaElegida);
+                     EventManager.Instancia.CartaDada();
+                    });
                 }
             }
             else if (posMundo.Y > 600 && posMundo.Y < 750)
@@ -116,9 +126,15 @@ public class Estado_DandoFavor : IEstado
     {
         int numeroAleatorio = rand.Next(0, TurnManager.Instance.JugadorActual.Mano.Count);
         Carta cartaParaDar = TurnManager.Instance.JugadorActual.Mano[numeroAleatorio];
-        TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaParaDar);
+        Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorActual);
+        Vector2f posDestino = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorPendienteDeFavor);
+        Texture tex = SpritesManager.Instancia.ConseguirTextura(cartaParaDar.Dibujo);
         Interfaz.Instancia.JugadorActual.Mano.Remove(cartaParaDar);
-        EventManager.Instancia.CartaDada();
+        Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
+        {
+         TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaParaDar);
+         EventManager.Instancia.CartaDada();
+        });
         
 
     }

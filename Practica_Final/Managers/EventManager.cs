@@ -43,7 +43,6 @@ public class EventManager
 
     public void CartaDada()
     {
-        Console.WriteLine("Vento de carta dada se ha lanzado");
         EnCartaDada?.Invoke();
     }
 

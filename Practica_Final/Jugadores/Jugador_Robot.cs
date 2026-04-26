@@ -4,6 +4,8 @@ using Practica_Final.Cartas;
 using Practica_Final.InteligenciaArtificial;
 using Practica_Final.Interfaces;
 using Practica_Final.Managers;
+using SFML.Graphics;
+using SFML.System;
 
 namespace Practica_Final.Jugadores;
 
@@ -59,15 +61,25 @@ public class Jugador_Robot:Jugador
         int cantidad = cartasElegidas.Length;
         if (cantidad == 1)
         {
+            Carta cartaJugada = cartasElegidas[0];
             if (cartasElegidas[0] is not IJugada cartaParaJugar || cartasElegidas[0] is Carta_Gato ||
                 cartasElegidas[0] is Carta_Defuser || cartasElegidas[0] is Carta_Nope) return;
-            ReactManager.Instance.MeterJugadaEnCola( cartasElegidas[0]);
-            ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
-            StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
-            foreach (var Var in Mano)
+            
+           
+            float posXInicio = 100f ;
+            float posYInicio = 570f; 
+            Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(this);
+            Vector2f posDestino = new Vector2f(720f, 300f); 
+            Texture tex = SpritesManager.Instancia.ConseguirTextura(cartaJugada.Dibujo);
+                            
+            Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
             {
-                Console.WriteLine($"Carta: {Var.Nombre}");
-            }
+                                
+                ReactManager.Instance.MeterJugadaEnCola(cartaJugada);
+                ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
+                StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+            });
+           
         }
         else if (cantidad == 2)
         {
@@ -89,9 +101,23 @@ public class Jugador_Robot:Jugador
             {
                 if (tipoRequerido == Carta_Gato.TiposGato.Ninguno ||
                     cartaComprobarTipo.tipoGato != tipoRequerido) return;
-                ReactManager.Instance.MeterJugadaEnCola( cartasElegidas[0]);
-                ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
-                StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                
+                
+                                
+                Vector2f posInicio1 = Interfaz.Instancia.ObtenerPosicionRobot(this);
+                Vector2f posInicio2 = Interfaz.Instancia.ObtenerPosicionRobot(this);
+                Vector2f posDestino1 = new Vector2f(720f, 300f);
+                Vector2f posDestino2 = new Vector2f(820f, 300f);
+                Texture tex1 = SpritesManager.Instancia.ConseguirTextura(cartasElegidas[0].Dibujo);
+                Texture tex2 = SpritesManager.Instancia.ConseguirTextura(cartasElegidas[1].Dibujo);
+                                
+                Interfaz.Instancia.LanzarAnimacion(tex2, posInicio2, posDestino2, 0.4f);
+                Interfaz.Instancia.LanzarAnimacion(tex1, posInicio1, posDestino1, 0.4f, () => 
+                {
+                    ReactManager.Instance.MeterJugadaEnCola(cartasElegidas[0]);
+                    ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
+                    StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
+                });
             }
         }
         if(TurnManager.Instance.JugadorActual != this)return;

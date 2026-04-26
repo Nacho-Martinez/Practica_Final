@@ -44,17 +44,7 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
     {
         TurnManager.Instance.AsignarJugadorPendienteDeFavor(TurnManager.Instance.JugadorActual); 
         TurnManager.Instance.DarTurno(objetivo);
-        
-        if (objetivo is Jugador_Humano)
-        {
-            StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
-        }
-        else 
-        {
-            // Si el objetivo es IA, que dé la carta automáticamente (tienes que programar esto)
-            // DarCartaIA(objetivo); 
-        }
-        
+        StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
         
     }
 

@@ -1,6 +1,8 @@
 ﻿using Practica_Final.Cartas;
 using Practica_Final.Jugadores;
 using Practica_Final.Managers;
+using SFML.Graphics;
+using SFML.System;
 
 namespace Practica_Final.BarajaCartas;
 
@@ -35,13 +37,22 @@ public class Mazo<T> where T : Carta
     private void Robar()
     {
         Carta cartaRobar = DarPrimeraCarta();
-        if (cartaRobar is Carta_Explosion)
+        Vector2f inicio = new Vector2f(600, 400);
+        Vector2f final = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorActual);
+        Texture text;
+        text = SpritesManager.Instancia.ConseguirTextura(TurnManager.Instance.JugadorActual is Jugador_Humano ? cartaRobar.Dibujo : "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\ReversoCarta.png");
+
+        Interfaz.Instancia.LanzarAnimacion(text,inicio,final,0.4f, () =>
         {
-            Interfaz.Instancia.cartaBomba = cartaRobar;
-            EventManager.Instancia.GatoBoom();
-            return;
-        }
-        TurnManager.Instance.JugadorActual.Mano.Add(cartaRobar);
+         if (cartaRobar is Carta_Explosion)
+         {
+             Interfaz.Instancia.cartaBomba = cartaRobar;
+             EventManager.Instancia.GatoBoom();
+             return;
+         }
+         TurnManager.Instance.JugadorActual.Mano.Add(cartaRobar);
+         TurnManager.Instance.ConfirmarPasoDeTurno();
+        });
         
     }
 

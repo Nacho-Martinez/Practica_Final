@@ -1,6 +1,7 @@
 ﻿using Practica_Final.BarajaCartas;
 using Practica_Final.Cartas;
 using Practica_Final.Interfaces;
+using Practica_Final.Jugadores;
 using Practica_Final.Managers;
 using SFML.Graphics;
 using SFML.System;
@@ -12,6 +13,10 @@ public class Estado_InsertandoBomba : IEstado
 {
     private Random rand = new Random();
     private bool teclaBloqueada = false;
+    private Clock relojIA = new Clock();
+    private bool iaHaELegido = false;
+    private bool relojIniciado = false;
+    int randNum = 0;
     public void Dibujar()
     {
         
@@ -44,6 +49,7 @@ public class Estado_InsertandoBomba : IEstado
 
     public void Inputs()
     {
+        if (TurnManager.Instance.JugadorActual is not Jugador_Humano) return;
         bool teclaPulsada = Keyboard.IsKeyPressed(Keyboard.Key.Right) || 
                             Keyboard.IsKeyPressed(Keyboard.Key.Left) || 
                             Keyboard.IsKeyPressed(Keyboard.Key.Enter);
@@ -66,8 +72,7 @@ public class Estado_InsertandoBomba : IEstado
                     Interfaz.Instancia.ResterarIndiceInsercion();
                     Interfaz.Instancia.IndicesSeleccionados.Clear();
                     StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
-                    EventManager.Instancia.SiguienteTurnoParaRobar();
-                    TurnManager.Instance.PasarTurno();
+                    TurnManager.Instance.PasarTurnoSinRobar();
                 }
 
                 teclaBloqueada = true; 
@@ -81,8 +86,27 @@ public class Estado_InsertandoBomba : IEstado
 
     public void ComportameintoIA()
     {
-        int randNum = rand.Next(0, Mazo<Carta>.Instancia.Baraja.Count);
+        if (!relojIniciado)
+        {
+            relojIA.Restart();
+            relojIniciado = true;
+        }
+        if (!iaHaELegido)
+        {
+         randNum = rand.Next(0, Mazo<Carta>.Instancia.Baraja.Count + 1);
+         iaHaELegido = true;
+        }
+
+        Interfaz.Instancia.IndiceInsercion = randNum;
+        
+        if (relojIA.ElapsedTime.AsSeconds() < 2.0f) return;
+        
         EventManager.Instancia.Insercion(randNum);
+        Interfaz.Instancia.ResterarIndiceInsercion();
+        Interfaz.Instancia.IndicesSeleccionados.Clear();
+        iaHaELegido = false;
+        relojIA.Restart();
+        relojIniciado = false;
         StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
         EventManager.Instancia.SiguienteTurnoParaRobar();
         TurnManager.Instance.PasarTurno();

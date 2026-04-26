@@ -35,13 +35,13 @@ class Program
         TurnManager.Instance.jugadoresVivos.Add(jugador4);
         TurnManager.Instance.InicializarJugadorActual();
         
-        //Esto Lo tengo que quitar
+        // //Esto Lo tengo que quitar
         // Carta_Explosion bombaDePrueba = new Carta_Explosion("Bomba de Prueba", "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Explosion.png");
         // Mazo<Carta>.Instancia.Baraja.Push(bombaDePrueba);
-        //Esto tbm
-        string rutaAtaque = "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Ataque1.png";
-        Carta_Ataque cartaTrucada = new Carta_Ataque("Ataque Trucado", rutaAtaque);
-        jugador1.Mano.Add(cartaTrucada);
+        // //Esto tbm
+        // string rutaAtaque = "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\Ataque1.png";
+        // Carta_Ataque cartaTrucada = new Carta_Ataque("Ataque Trucado", rutaAtaque);
+        // jugador1.Mano.Add(cartaTrucada);
         
          Interfaz.Instancia.ResterarIndiceInsercion();
          

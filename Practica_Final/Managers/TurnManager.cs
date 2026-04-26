@@ -21,12 +21,15 @@ public class TurnManager
     }
     public void PasarTurno()
     {
-        indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
-        JugadorActual = jugadoresVivos[indiceActual];
         EventManager.Instancia.SiguienteTurnoParaRobar();
-        EventManager.Instancia.SiguenteTurno();
     }
 
+    public void ConfirmarPasoDeTurno()
+    {
+        indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
+        JugadorActual = jugadoresVivos[indiceActual];
+        EventManager.Instancia.SiguenteTurno();
+    }
     
     public void DarTurno(Jugador jugador)
     {

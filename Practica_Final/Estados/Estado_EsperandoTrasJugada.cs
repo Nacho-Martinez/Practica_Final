@@ -31,6 +31,7 @@ public class Estado_EsperandoTrasJugada : IEstado
             cronometro.Restart();
             relojIniciado = true;
         }
+        Interfaz.Instancia.DibujarRivales();
         jugadorActual = TurnManager.Instance.DevolverPrimerJugadorHumano();
         float margenIzquierdo = 100f;
         float anchoDisponible = Interfaz.Instancia.VentanaAncho - (margenIzquierdo * 2);
@@ -110,11 +111,22 @@ public class Estado_EsperandoTrasJugada : IEstado
                         if (cantidad == 1)
                         {
                             Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
+                            
                             if (cartasElegidas[0] is IJugada cartaParaJugar && cartasElegidas[0] is Carta_Nope)
                             {
-                                cartaParaJugar.JugarCarta();
-                                ReactManager.Instance.ProcesarJugada(jugadorActual);
-                                cronometro.Restart();
+                                int indiceEnMano = Interfaz.Instancia.IndicesSeleccionados[0];
+                                float posXInicio = 100f + (indiceEnMano * Interfaz.Instancia.Separacion);
+                                float posYInicio = 570f; 
+                                Vector2f posInicio = new Vector2f(posXInicio, posYInicio);
+                                Vector2f posDestino = new Vector2f(720f, 300f); 
+                                Texture tex = SpritesManager.Instancia.ConseguirTextura(cartasElegidas[0].Dibujo);
+
+                                Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () =>
+                                {
+                                    cartaParaJugar.JugarCarta();
+                                    ReactManager.Instance.ProcesarJugada(jugadorActual);
+                                    cronometro.Restart();
+                                });
                             }
                         }
                     }
@@ -183,11 +195,18 @@ public class Estado_EsperandoTrasJugada : IEstado
             {
                 if (carta is Carta_Nope nope)
                 {
-                    nope.JugarCarta();
-                    ReactManager.Instance.ProcesarJugada(robot,carta);
                     iaHaJugadoNope = true;
-                    cronometro.Restart();
-                    return;
+                    Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(robot);
+                    Vector2f posDestino = new Vector2f(720f, 300f); 
+                    Texture tex = SpritesManager.Instancia.ConseguirTextura(carta.Dibujo);
+
+                    Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () =>
+                    {
+                        nope.JugarCarta();
+                        ReactManager.Instance.ProcesarJugada(robot, carta);
+                        cronometro.Restart();
+                        return;
+                    });
                 }
             }
         }

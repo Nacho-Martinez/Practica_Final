@@ -11,9 +11,12 @@ public class Estado_DefusandoBomba : IEstado
 {
     private bool mousePulsado = false;
     private Jugador jugadorActual;
+    private Clock relojIA = new Clock();
+    private bool relojIniciado = false;
     public void Dibujar()
     {
         
+        Interfaz.Instancia.DibujarRivales();
         RectangleShape carta = new RectangleShape(new Vector2f(200,350));
         carta.Position = new Vector2f(400,50);
         carta.Texture = SpritesManager.Instancia.ConseguirTextura(Interfaz.Instancia.cartaBomba.Dibujo);
@@ -46,13 +49,13 @@ public class Estado_DefusandoBomba : IEstado
                 rect.OutlineThickness = 2;
             }
 
-               
             Interfaz.Instancia.Ventana.Draw(rect);
         }
     }
 
     public void Inputs()
     {
+        if (TurnManager.Instance.JugadorActual is not Jugador_Humano) return;
             if (Mouse.IsButtonPressed(Mouse.Button.Left))
             {
                 if (mousePulsado) return;
@@ -123,12 +126,20 @@ public class Estado_DefusandoBomba : IEstado
 
     public void ComportameintoIA()
     {
+        if (!relojIniciado)
+        {
+            relojIA.Restart();
+            relojIniciado = true;
+        }
+        if(relojIA.ElapsedTime.AsSeconds() <1.5f)return;
         if (TurnManager.Instance.JugadorActual is Jugador_Robot jugadorRobot)
         {
             foreach (var carta in jugadorRobot.Mano)
             {
                 if (carta is Carta_Defuser)
                 {
+                    relojIA.Restart();
+                    relojIniciado = false;
                     jugadorRobot.JugarCarta(carta);
                     return;
                 }
