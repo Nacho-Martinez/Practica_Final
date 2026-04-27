@@ -16,6 +16,7 @@ public class ComportamientoFacil : Comportamiento
     {
         cartasAgresivas.Clear();
         cartasPasivas.Clear();
+        Dictionary<string, List<Carta>> gatosAgrupados = new Dictionary<string, List<Carta>>();
         foreach (var carta in robot.Mano)
         {
             switch (carta)
@@ -24,8 +25,14 @@ public class ComportamientoFacil : Comportamiento
                     continue;
                 case Carta_Ataque:
                 case Carta_Favor:
-                case Carta_Gato:
                     cartasAgresivas.Add(carta);
+                    break;
+                case Carta_Gato:
+                    if (!gatosAgrupados.ContainsKey(carta.Nombre))
+                    {
+                        gatosAgrupados[carta.Nombre] = new List<Carta>();
+                    }
+                    gatosAgrupados[carta.Nombre].Add(carta);
                     break;
                 default:
                 {
@@ -39,31 +46,35 @@ public class ComportamientoFacil : Comportamiento
             }
         }
 
-        List<Carta> cartasGato = new();
-        int counter = 0;
-        foreach (var cartaGato in cartasAgresivas)
+        foreach (var grupo in gatosAgrupados)
         {
-            if (cartaGato is Carta_Gato)
+            List<Carta> gatosDelMismoTipo = grupo.Value;
+            int paresCompletos = gatosDelMismoTipo.Count / 2;
+            int cartasQueFormanPar = paresCompletos * 2;
+            for (int i = 0; i < cartasQueFormanPar; i++)
             {
-                counter++;
-                cartasGato.Add(cartaGato);
+                cartasAgresivas.Add(gatosDelMismoTipo[i]);
             }
-        }
 
-        if (counter % 2 != 0)
-        {
-            cartasPasivas.Add(cartasAgresivas[0]);
-            cartasAgresivas.RemoveAt(0);
+            if (gatosDelMismoTipo.Count % 2 != 0)
+            {
+                cartasPasivas.Add(gatosDelMismoTipo.Last());
+            }
+
         }
     }
 
     public override Carta[] CartasParaJugar()
     {
         int randomNum = rand.Next(0, 11);
+        int randCarta;
         if (randomNum <= 8)
         {
-            int randCarta = rand.Next(0, cartasPasivas.Count);
-
+            do
+            {
+             randCarta = rand.Next(0, cartasPasivas.Count);
+                
+            } while (cartasPasivas[randCarta] is Carta_Gato);
             return [cartasPasivas[randCarta]];
         }
         else
