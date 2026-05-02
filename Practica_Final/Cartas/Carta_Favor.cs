@@ -19,12 +19,13 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
         if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
         {
             int indiceEnemigo;
+            Jugador objetivo;
             do
             {
-                indiceEnemigo = rand.Next(0, TurnManager.Instance.jugadoresVivos.Count);
+                objetivo = TurnManager.Instance.jugadoresVivos[rand.Next(0, TurnManager.Instance.jugadoresVivos.Count)];
                 
-            } while (TurnManager.Instance.jugadoresVivos[indiceEnemigo] == TurnManager.Instance.JugadorActual);
-            Logica(TurnManager.Instance.jugadoresVivos[indiceEnemigo]);
+            } while (objetivo == TurnManager.Instance.JugadorActual);
+            Logica(objetivo);
             return;
         }
         Interfaz.Instancia.IndiceEnemigo = 0;
@@ -32,7 +33,7 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
         EventManager.Instancia.EnJugadorSeleccionado += ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado += Logica;
     }
-
+    
     private void VolverTurno()
     {
         LimpiarEventos();

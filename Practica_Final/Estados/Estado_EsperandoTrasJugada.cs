@@ -91,6 +91,7 @@ public class Estado_EsperandoTrasJugada : IEstado
 
     public void Inputs()
     {
+        ComportameintoIA();
         if (Mouse.IsButtonPressed(Mouse.Button.Left))
             {
                 if (mousePulsado) return;

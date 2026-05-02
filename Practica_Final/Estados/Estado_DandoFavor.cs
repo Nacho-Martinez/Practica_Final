@@ -74,7 +74,7 @@ public class Estado_DandoFavor : IEstado
                     return;
                 foreach (var indice in Interfaz.Instancia.IndicesSeleccionados)
                 {
-                    cartasElegidas.Add(Interfaz.Instancia.JugadorActual.Mano[indice]);
+                    cartasElegidas.Add(TurnManager.Instance.JugadorActual.Mano[indice]);
                 }
 
                 int cantidad = cartasElegidas.Count;
@@ -88,14 +88,14 @@ public class Estado_DandoFavor : IEstado
                     Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
                     {
                      TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaElegida);
-                     Interfaz.Instancia.JugadorActual.Mano.Remove(cartaElegida);
+                     TurnManager.Instance.JugadorActual.Mano.Remove(cartaElegida);
                      EventManager.Instancia.CartaDada();
                     });
                 }
             }
             else if (posMundo.Y > 600 && posMundo.Y < 750)
             {
-                for (int i = Interfaz.Instancia.JugadorActual.Mano.Count - 1; i >= 0; i--)
+                for (int i = TurnManager.Instance.JugadorActual.Mano.Count - 1; i >= 0; i--)
                 {
                     float posX = 100 + (i * Interfaz.Instancia.Separacion);
                     float posY = Interfaz.Instancia.IndicesSeleccionados.Contains(i) ? 570f : 600f;
@@ -129,7 +129,7 @@ public class Estado_DandoFavor : IEstado
         Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorActual);
         Vector2f posDestino = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorPendienteDeFavor);
         Texture tex = SpritesManager.Instancia.ConseguirTextura(cartaParaDar.Dibujo);
-        Interfaz.Instancia.JugadorActual.Mano.Remove(cartaParaDar);
+        TurnManager.Instance.JugadorActual.Mano.Remove(cartaParaDar);
         Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
         {
          TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaParaDar);

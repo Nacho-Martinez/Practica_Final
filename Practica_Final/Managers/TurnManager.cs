@@ -4,6 +4,7 @@ namespace Practica_Final.Managers;
 
 public class TurnManager
 {
+    public Jugador VictimaDelFavor { get; set; }
     public List<Jugador> jugadoresVivos { get; private set; } = new List<Jugador>();
     private int indiceActual = 0;
     private int turnosRestantes;
@@ -26,8 +27,32 @@ public class TurnManager
 
     public void ConfirmarPasoDeTurno()
     {
-        indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
-        JugadorActual = jugadoresVivos[indiceActual];
+        string nombreAnterior = JugadorActual.Nombre;
+        int indiceAnterior = jugadoresVivos.IndexOf(JugadorActual);
+        
+        
+        if (jugadoresVivos.Contains(JugadorActual))
+        {
+            int indice = jugadoresVivos.IndexOf(JugadorActual);
+            indice = (indice + 1) % jugadoresVivos.Count;
+            JugadorActual = jugadoresVivos[indice];
+        }
+        else 
+        {
+            if (indiceActual >= jugadoresVivos.Count) indiceActual = 0;
+            JugadorActual = jugadoresVivos[indiceActual];
+        }
+        string nombreNuevo = JugadorActual.Nombre;
+        int indiceNuevo = jugadoresVivos.IndexOf(JugadorActual);
+        int totalVivos = jugadoresVivos.Count;
+        
+        Console.WriteLine("\n" + new string('=', 40));
+        Console.WriteLine($" [CAMBIO DE TURNO]");
+        Console.WriteLine($" Sale: {nombreAnterior} (Pos: {indiceAnterior})");
+        Console.WriteLine($" Entra: {nombreNuevo} (Pos: {indiceNuevo})");
+        Console.WriteLine($" Jugadores restantes: {totalVivos}");
+        Console.WriteLine(new string('=', 40) + "\n");
+        
         EventManager.Instancia.SiguenteTurno();
     }
     
@@ -56,5 +81,12 @@ public class TurnManager
         }
 
         return null;
+    }
+
+    public void LimpiarListar()
+    {
+        JugadorActual = null;
+        jugadoresVivos.Clear();
+        JugadorPendienteDeFavor = null;
     }
 }

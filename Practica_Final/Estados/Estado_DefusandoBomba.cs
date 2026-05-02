@@ -70,7 +70,7 @@ public class Estado_DefusandoBomba : IEstado
                             return;
                         foreach (var indice in Interfaz.Instancia.IndicesSeleccionados)
                         {
-                            cartasElegidas.Add(Interfaz.Instancia.JugadorActual.Mano[indice]);
+                            cartasElegidas.Add(TurnManager.Instance.JugadorActual.Mano[indice]);
                         }
 
                         int cantidad = cartasElegidas.Count;
@@ -84,7 +84,7 @@ public class Estado_DefusandoBomba : IEstado
                                 {
                                     car.Resaltada = false;
                                 }
-                                ReactManager.Instance.ProcesarJugada(Interfaz.Instancia.JugadorActual);
+                                ReactManager.Instance.ProcesarJugada(TurnManager.Instance.JugadorActual);
                             }
                         }
                         else
@@ -95,7 +95,7 @@ public class Estado_DefusandoBomba : IEstado
                     }
                     else if (posMundo.Y > 600 && posMundo.Y < 750)
                     {
-                        for (int i = Interfaz.Instancia.JugadorActual.Mano.Count - 1; i >= 0; i--)
+                        for (int i = TurnManager.Instance.JugadorActual.Mano.Count - 1; i >= 0; i--)
                         {
                             float posX = 100 + (i * Interfaz.Instancia.Separacion);
                             float posY = Interfaz.Instancia.IndicesSeleccionados.Contains(i) ? 570f : 600f;
@@ -147,5 +147,6 @@ public class Estado_DefusandoBomba : IEstado
         }
         
         Console.WriteLine($"[IA] La ia {TurnManager.Instance.JugadorActual.Nombre} no ha encontrado un defuser en su mano");
+        TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.JugadorActual);
     }
 }

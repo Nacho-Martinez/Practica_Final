@@ -58,11 +58,23 @@ public class ComportamientoDificil : Comportamiento
 
     public override Carta[] CartasParaJugar()
     {
-        int randomNum = rand.Next(0, 11);
-        if (randomNum <= 4)
+        if (cartasPasivas.Count == 0 && cartasAgresivas.Count == 0)
         {
-            int randCarta = rand.Next(0, cartasPasivas.Count);
-
+            Console.WriteLine("No hay cartas el las listas");
+            return null;
+        }
+        int randomNum = rand.Next(0, 11);
+        int randCarta;
+        bool jugarPasiva = (randomNum <= 4);
+        if (jugarPasiva && cartasPasivas.Count == 0) jugarPasiva = false;
+        if (!jugarPasiva && cartasAgresivas.Count == 0) jugarPasiva = true;
+        if (jugarPasiva)
+        {
+            do
+            {
+                randCarta = rand.Next(0, cartasPasivas.Count);
+                
+            } while (cartasPasivas[randCarta] is Carta_Gato);
             return [cartasPasivas[randCarta]];
         }
         else
@@ -78,10 +90,17 @@ public class ComportamientoDificil : Comportamiento
                         segundaCartaGato = carta;
                         break;
                     }
-                    return null;
                 }
 
-                return [cartasAgresivas[randomNum], segundaCartaGato];
+                if (segundaCartaGato != null)
+                {
+                    return [cartasAgresivas[randomNum], segundaCartaGato];
+                }
+                else
+                {
+                    Console.WriteLine("NO ha encontrado pareja para su gato");
+                    return null;
+                }
             }
             else
             {

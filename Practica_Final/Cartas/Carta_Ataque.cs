@@ -74,7 +74,7 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo
             Vector2f inicio = new Vector2f(600, 400);
             Vector2f final = Interfaz.Instancia.ObtenerPosicionRobot(objetivo);
             Texture text;
-            text = SpritesManager.Instancia.ConseguirTextura(TurnManager.Instance.JugadorActual is Jugador_Humano ? cartaRobada.Dibujo : "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\ReversoCarta.png");
+            text = SpritesManager.Instancia.ConseguirTextura(TurnManager.Instance.JugadorActual is Jugador_Humano ? cartaRobada.Dibujo : "Sprites\\ReversoCarta.png");
             Interfaz.Instancia.LanzarAnimacion(text,inicio,final,0.4f, () =>
             {
                 objetivo.Mano.Add(cartaRobada);

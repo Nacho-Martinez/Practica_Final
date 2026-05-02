@@ -27,7 +27,7 @@ public class Interfaz
     public Carta cartaBomba;
     public int IndiceInsercion { get; set; } = 0;
     private Carta[] cartasJugadas = new Carta[2];
-    private List<Animaciones> AnimacionesActivas = new ();
+    public List<Animaciones> AnimacionesActivas = new ();
 
 
     public void GenerarVentana()
@@ -40,46 +40,6 @@ public class Interfaz
         BotonSaltarTurno.FillColor = Color.Transparent;
         BotonSaltarTurno.Position = new Vector2f(300, 400);
         Ventana.Closed += (_, _) => Ventana.Close();
-        while (Ventana.IsOpen)
-        {
-            bool hayAnimaciones = AnimacionesActivas.Count > 0;
-            
-            if (!hayAnimaciones)
-            {
-                JugadorActual = TurnManager.Instance.JugadorActual;
-                if (JugadorActual is Jugador_Robot)
-                {
-                    StateManager.Intancia.EstadoActual.ComportameintoIA();
-                }
-
-                StateManager.Intancia.EstadoActual.Inputs();
-            }
-
-            Ventana.DispatchEvents();
-           Ventana.Clear(new Color(30,30,30));
-           DibujarFondo();
-           Ventana.Draw(BotonJugar);
-            DibujarCartasJugadas();
-           Ventana.Draw(BotonSaltarTurno);
-           StateManager.Intancia.EstadoActual.Dibujar();
-           MostrarTurnoActual();
-           
-           for (int i = AnimacionesActivas.Count - 1; i >= 0; i--)
-           {
-               Animaciones anim = AnimacionesActivas[i];
-               Ventana.Draw(anim.Carta);
-        
-               if (anim.Actualizar())
-               {
-                   anim.AlTerminar?.Invoke();
-                   AnimacionesActivas.RemoveAt(i);
-               }
-           }
-           
-           Ventana.Display();
-           
-        }
-        
     }
     
     public void CrearVentana()
@@ -103,10 +63,10 @@ public class Interfaz
             : (IndiceInsercion + 1) % Mazo<Carta>.Instancia.Baraja.Count;
     }
 
-    private void MostrarTurnoActual()
+    public void MostrarTurnoActual()
     {
-        if (JugadorActual == null) return;
-        Text textoTurno = new Text(Fuente, $"Turno de: {JugadorActual.Nombre}");
+        if (TurnManager.Instance.JugadorActual == null) return;
+        Text textoTurno = new Text(Fuente, $"Turno de: {TurnManager.Instance.JugadorActual.Nombre}");
         textoTurno.CharacterSize = 24;
         textoTurno.FillColor = Color.Black; 
         textoTurno.Position = new Vector2f(950, 30); 
@@ -158,7 +118,7 @@ public class Interfaz
     {
         RectangleShape fondo = new RectangleShape(new Vector2f(1200,800));
         fondo.FillColor = Color.White;
-        fondo.Texture = SpritesManager.Instancia.ConseguirTextura("C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\FondoParaMesa.jpg");
+        fondo.Texture = SpritesManager.Instancia.ConseguirTextura("Sprites\\FondoParaMesa.jpg");
         Ventana.Draw(fondo);
     }
 
@@ -180,7 +140,7 @@ public class Interfaz
                 {
                     RectangleShape cartaRival = new RectangleShape(new Vector2f(ancho, alto));
                     cartaRival.Origin = new Vector2f(ancho / 2, alto / 2);
-                    cartaRival.Texture = SpritesManager.Instancia.ConseguirTextura("C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\ReversoCarta.png");
+                    cartaRival.Texture = SpritesManager.Instancia.ConseguirTextura("Sprites\\ReversoCarta.png");
                     if (numeroRobot == 0)
                     {
                         float inicioY = 400f - ((CantidadCartas - 1) * separacion) / 2f;

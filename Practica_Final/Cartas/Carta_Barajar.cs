@@ -1,5 +1,6 @@
 ﻿using Practica_Final.BarajaCartas;
 using Practica_Final.Interfaces;
+using Practica_Final.Managers;
 using SFML.Graphics;
 
 namespace Practica_Final.Cartas;

@@ -13,6 +13,8 @@ public class Estado_Normal : IEstado
 {
     private bool mousePulsado = false;
     private Jugador jugadorActual;
+    
+    
     public void Dibujar()
     {
         Interfaz.Instancia.DibujarRivales();

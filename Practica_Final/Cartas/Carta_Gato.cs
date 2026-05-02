@@ -28,14 +28,14 @@ public class Carta_Gato : Carta,IJugada,IObjetivo
         if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
         {
             int indiceEnemigo;
+            Jugador objetivo;
             do
             {
-                indiceEnemigo = rand.Next(0, TurnManager.Instance.jugadoresVivos.Count);
+                objetivo = TurnManager.Instance.jugadoresVivos[rand.Next(0, TurnManager.Instance.jugadoresVivos.Count)];
                 
-            } while (TurnManager.Instance.jugadoresVivos[indiceEnemigo] == TurnManager.Instance.JugadorActual);
-            Logica(TurnManager.Instance.jugadoresVivos[indiceEnemigo]);
+            } while (objetivo == TurnManager.Instance.JugadorActual);
+            Logica(objetivo);
             return;
-            
         }
         Interfaz.Instancia.IndiceEnemigo = 0;
         StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoAtaque);
@@ -43,7 +43,6 @@ public class Carta_Gato : Carta,IJugada,IObjetivo
         EventManager.Instancia.EnJugadorCOnfirmado += Logica;
         EventManager.Instancia.EnCartaDada += VolverTurno;
     }
-
     private void VolverTurno()
     {
         TurnManager.Instance.DarTurno(TurnManager.Instance.JugadorPendienteDeFavor);

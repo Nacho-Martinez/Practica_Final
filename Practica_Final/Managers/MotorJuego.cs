@@ -1,5 +1,7 @@
 ﻿using Practica_Final.BarajaCartas;
 using Practica_Final.Cartas;
+using Practica_Final.Estados;
+using Practica_Final.Jugadores;
 
 namespace Practica_Final.Managers;
 
@@ -7,6 +9,7 @@ public class MotorJuego
 {
     public static MotorJuego Intancia { get; private set; }= new();
     private Random rand = new();
+    public bool Victoria { get; private set; } = false;
 
     public MotorJuego()
     {
@@ -27,8 +30,10 @@ public class MotorJuego
 
         if (!tieneDefuser)
         {
-            StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+            Console.WriteLine($"[EXPLOSIÓN] {TurnManager.Instance.JugadorActual.Nombre} ha muerto.");
             TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.JugadorActual);
+            RevisarFInPartida();
+            StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
             //TurnManager.Instance.PasarTurno();
             return;
         }
@@ -47,5 +52,33 @@ public class MotorJuego
         }
 
         return listaTemporal;
+    }
+
+    public void RevisarFInPartida()
+    {
+        int playerVivos = 0;
+        int robotsVivos = 0;
+        foreach (var jugador in TurnManager.Instance.jugadoresVivos)
+        {
+            if (jugador is Jugador_Humano)
+                playerVivos++;
+            else
+            {
+                robotsVivos++;
+            }
+        }
+
+        if (playerVivos == 0)
+        {
+            Victoria = false;
+            StateManager.Intancia.CambiarEstado(StateManager.Estados.FinPartida);
+            ElJuego.Instancia.haEmpezadoElJuego = false;
+        }
+        else if(robotsVivos == 0)
+        {
+            Victoria = true;
+            StateManager.Intancia.CambiarEstado(StateManager.Estados.FinPartida);
+            ElJuego.Instancia.haEmpezadoElJuego = false;
+        }
     }
 }

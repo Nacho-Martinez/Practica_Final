@@ -36,14 +36,16 @@ public class Mazo<T> where T : Carta
 
     private void Robar()
     {
+        
         Carta cartaRobar = DarPrimeraCarta();
         Vector2f inicio = new Vector2f(600, 400);
         Vector2f final = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorActual);
         Texture text;
-        text = SpritesManager.Instancia.ConseguirTextura(TurnManager.Instance.JugadorActual is Jugador_Humano ? cartaRobar.Dibujo : "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\ReversoCarta.png");
+        text = SpritesManager.Instancia.ConseguirTextura(TurnManager.Instance.JugadorActual is Jugador_Humano ? cartaRobar.Dibujo : "Sprites\\ReversoCarta.png");
 
         Interfaz.Instancia.LanzarAnimacion(text,inicio,final,0.4f, () =>
         {
+            Console.WriteLine("[LOG] La Animacion de robar ha terminado");
          if (cartaRobar is Carta_Explosion)
          {
              Interfaz.Instancia.cartaBomba = cartaRobar;
@@ -99,4 +101,8 @@ public class Mazo<T> where T : Carta
         return listaTemp;
     }
 
+    public void LimpiarMazo()
+    {
+        Baraja.Clear();
+    }
 }

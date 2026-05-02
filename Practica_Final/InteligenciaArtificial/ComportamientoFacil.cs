@@ -66,9 +66,17 @@ public class ComportamientoFacil : Comportamiento
 
     public override Carta[] CartasParaJugar()
     {
+        if (cartasPasivas.Count == 0 && cartasAgresivas.Count == 0)
+        {
+            Console.WriteLine("No hay cartas el las listas");
+            return null;
+        }
         int randomNum = rand.Next(0, 11);
         int randCarta;
-        if (randomNum <= 8)
+        bool jugarPasiva = (randomNum <= 8);
+        if (jugarPasiva && cartasPasivas.Count == 0) jugarPasiva = false;
+        if (!jugarPasiva && cartasAgresivas.Count == 0) jugarPasiva = true;
+        if (jugarPasiva)
         {
             do
             {
@@ -90,10 +98,17 @@ public class ComportamientoFacil : Comportamiento
                         segundaCartaGato = carta;
                         break;
                     }
-                    return null;
                 }
 
-                return [cartasAgresivas[randomNum], segundaCartaGato];
+                if (segundaCartaGato != null)
+                {
+                    return [cartasAgresivas[randomNum], segundaCartaGato];
+                }
+                else
+                {
+                    Console.WriteLine("NO ha encontrado pareja para su gato");
+                    return null;
+                }
             }
             else
             {

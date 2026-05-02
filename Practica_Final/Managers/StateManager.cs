@@ -15,10 +15,14 @@ public class StateManager
         DefusandoBomba,
         InsertandoBomba,
         DandoFavor,
-        EsperandoTrasJugada
+        EsperandoTrasJugada,
+        MenuPrincipal,
+        EleccionDificultad,
+        EleccionNombre,
+        FinPartida
     };
 
-    public IEstado EstadoActual { get; private set; } = new Estado_Normal();
+    public IEstado EstadoActual { get; private set; }
     private Dictionary<Estados, IEstado> diccionarioEstados;
     
     private StateManager()
@@ -31,13 +35,26 @@ public class StateManager
             { Estados.DefusandoBomba, new Estado_DefusandoBomba() },
             { Estados.InsertandoBomba, new Estado_InsertandoBomba() },
             { Estados.DandoFavor , new Estado_DandoFavor() },
-            { Estados.EsperandoTrasJugada , new Estado_EsperandoTrasJugada()}
+            { Estados.EsperandoTrasJugada , new Estado_EsperandoTrasJugada()},
+            {Estados.MenuPrincipal, new Estado_MenuPrincipal()},
+            { Estados.EleccionNombre ,new Estado_EleccionNombre()},
+            { Estados.EleccionDificultad ,new Estado_EleccionDificultad()},
+            { Estados.FinPartida ,new Estado_FinPartida()}
         };
-        EstadoActual = diccionarioEstados[Estados.Normal]; 
+        EstadoActual = diccionarioEstados[Estados.MenuPrincipal]; 
     }
 
     public void CambiarEstado(Estados estado)
     {
+        if (estado == Estados.EleccionNombre)
+        {
+            diccionarioEstados[estado] = new Estado_EleccionNombre();
+        }
+        else if (estado == Estados.EleccionDificultad)
+        {
+            diccionarioEstados[estado] = new Estado_EleccionDificultad();
+        }
+    
         EstadoActual = diccionarioEstados[estado];
         
     }

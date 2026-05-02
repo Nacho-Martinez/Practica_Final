@@ -27,7 +27,7 @@ public class Estado_ViendoFuturo : IEstado
             RectangleShape panelFondoIa = new RectangleShape(new Vector2f(1200, 800));
             panelFondoIa.FillColor = Color.White;
             panelFondoIa.Texture = SpritesManager.Instancia.ConseguirTextura(
-                 "C:\\Users\\nache\\OneDrive\\Desktop\\POO\\Practica_Final\\Practica_Final\\Sprites\\VerFuturoRobot.png");
+                 "Sprites\\VerFuturoRobot.png");
             Interfaz.Instancia.Ventana.Draw(panelFondoIa);
         }
         else
