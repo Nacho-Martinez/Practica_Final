@@ -23,6 +23,7 @@ public class Jugador_Robot:Jugador
     }
     public override void IniciarTurno()
     {
+        if (TurnManager.Instance.JugadorActual != this) return; 
         MiComportamiento.RellenarListas(this);
         numeroJugadas = MiComportamiento.NumeroDeJugadas();
     }
@@ -32,7 +33,8 @@ public class Jugador_Robot:Jugador
         bool puedeJugar = false;
         if (numeroJugadas < 0)
         {
-            TurnManager.Instance.PasarTurno();
+            if (TurnManager.Instance.JugadorActual == this)
+                TurnManager.Instance.PasarTurno();
             return;
         }
         if(TurnManager.Instance.JugadorActual != this)return;
@@ -77,6 +79,10 @@ public class Jugador_Robot:Jugador
                                 
                 ReactManager.Instance.MeterJugadaEnCola(cartaJugada);
                 ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
+                if (cartaJugada is IForzarFinTurno) // <- añade esto
+                {
+                    numeroJugadas = 0;
+                }
                 StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
             });
            
@@ -121,7 +127,6 @@ public class Jugador_Robot:Jugador
             }
         }
         if(TurnManager.Instance.JugadorActual != this)return;
-        numeroJugadas--;
     }
 
     public void JugarCarta(Carta carta)
@@ -139,5 +144,14 @@ public class Jugador_Robot:Jugador
     public override void RobarCarta()
     {
     }
-    
+
+    public void ReducirJugadas()
+    {
+        numeroJugadas--;
+        if (numeroJugadas <= 0)
+        {
+            TurnManager.Instance.PasarTurno();
+        }
+        
+    }
 }

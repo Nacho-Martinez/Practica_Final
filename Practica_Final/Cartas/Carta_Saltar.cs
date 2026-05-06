@@ -4,7 +4,7 @@ using SFML.Graphics;
 
 namespace Practica_Final.Cartas;
 
-public class Carta_Saltar : Carta,IJugada
+public class Carta_Saltar : Carta,IJugada,IForzarFinTurno
 {
     public Carta_Saltar(string Nombre, string  Dibujo) : base(Nombre, Dibujo)
     {

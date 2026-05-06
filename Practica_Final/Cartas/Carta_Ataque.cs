@@ -7,7 +7,7 @@ using SFML.System;
 
 namespace Practica_Final.Cartas;
 
-public class Carta_Ataque : Carta ,IJugada,IObjetivo
+public class Carta_Ataque : Carta ,IJugada,IObjetivo,IForzarFinTurno
 {
     private Random rand = new Random();
     public Carta_Ataque(string Nombre, string  Dibujo) : base(Nombre, Dibujo)

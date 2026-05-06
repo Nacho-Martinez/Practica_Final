@@ -28,6 +28,7 @@ public class Interfaz
     public int IndiceInsercion { get; set; } = 0;
     private Carta[] cartasJugadas = new Carta[2];
     public List<Animaciones> AnimacionesActivas = new ();
+    private Dictionary<Jugador, int> _slotsPorJugador = new();
 
 
     public void GenerarVentana()
@@ -76,7 +77,7 @@ public class Interfaz
 
     public void ResterarIndiceInsercion()
     {
-        IndiceInsercion = 1;
+        IndiceInsercion = 0;
     }
 
     public void DibujarCartasJugadas()
@@ -124,47 +125,45 @@ public class Interfaz
 
     public void DibujarRivales()
     {
-        int numeroRobot = 0;
-        foreach (var jugador in TurnManager.Instance.jugadoresVivos )
+        foreach (var jugador in TurnManager.Instance.jugadoresVivos)
         {
-            if (jugador is Jugador_Robot)
+            if (jugador is Jugador_Robot && _slotsPorJugador.TryGetValue(jugador, out int numeroRobot))
             {
                 float escala = 0.6f;
                 float ancho = 100f * escala;
                 float alto = 150f * escala;
-
                 float separacion = 25f;
-                int CantidadCartas = jugador.Mano.Count;
+                int cantidadCartas = jugador.Mano.Count;
 
-                for (int i = 0; i < CantidadCartas; i++)
+                for (int i = 0; i < cantidadCartas; i++)
                 {
                     RectangleShape cartaRival = new RectangleShape(new Vector2f(ancho, alto));
                     cartaRival.Origin = new Vector2f(ancho / 2, alto / 2);
                     cartaRival.Texture = SpritesManager.Instancia.ConseguirTextura("Sprites\\ReversoCarta.png");
+
                     if (numeroRobot == 0)
                     {
-                        float inicioY = 400f - ((CantidadCartas - 1) * separacion) / 2f;
+                        float inicioY = 400f - ((cantidadCartas - 1) * separacion) / 2f;
                         cartaRival.Position = new Vector2f(70f, inicioY + (i * separacion));
                         cartaRival.Rotation = 90f;
                     }
                     else if (numeroRobot == 1)
                     {
-                        float inicioX = 600f - ((CantidadCartas - 1) * separacion) / 2f;
-                        cartaRival.Position = new Vector2f(inicioX+(i*separacion),80f);
+                        float inicioX = 600f - ((cantidadCartas - 1) * separacion) / 2f;
+                        cartaRival.Position = new Vector2f(inicioX + (i * separacion), 80f);
                         cartaRival.Rotation = 180f;
                     }
-                    else if (numeroRobot ==2)
+                    else if (numeroRobot == 2)
                     {
-                        float inicioY = 400f - ((CantidadCartas - 1) * separacion) / 2f;
+                        float inicioY = 400f - ((cantidadCartas - 1) * separacion) / 2f;
                         cartaRival.Position = new Vector2f(1130f, inicioY + (i * separacion));
                         cartaRival.Rotation = -90f;
                     }
                     Instancia.Ventana.Draw(cartaRival);
                 }
-
-                numeroRobot++;
             }
         }
+
     }
 
     public void LanzarAnimacion(Texture textura, Vector2f inicion, Vector2f fin, float duracion,Action alTerminar = null)
@@ -174,21 +173,25 @@ public class Interfaz
 
     public Vector2f ObtenerPosicionRobot(Jugador robot)
     {
-        int numeroRobot = 0;
-        foreach (var jugador in TurnManager.Instance.jugadoresVivos)
+        if (!_slotsPorJugador.TryGetValue(robot, out int numeroRobot))
+            return new Vector2f(600, 600);
+
+        if (numeroRobot == 0) return new Vector2f(70f, 400f);
+        if (numeroRobot == 1) return new Vector2f(600f, 80f);
+        if (numeroRobot == 2) return new Vector2f(1130f, 400f);
+
+        return new Vector2f(600, 600);
+    }
+    public void AsignarHuecoDeJugador(List<Jugador> todosLosJugadores)
+    {
+        int slot = 0;
+        foreach (var jugador in todosLosJugadores)
         {
             if (jugador is Jugador_Robot)
             {
-                if (jugador == robot)
-                {
-                   
-                    if (numeroRobot == 0) return new Vector2f(70f, 400f); 
-                    if (numeroRobot == 1) return new Vector2f(600f, 80f);  
-                    if (numeroRobot == 2) return new Vector2f(1130f, 400f); 
-                }
-                numeroRobot++;
+                _slotsPorJugador[jugador] = slot;
+                slot++;
             }
         }
-        return new Vector2f(600, 600);
     }
 }

@@ -108,7 +108,6 @@ public class Estado_InsertandoBomba : IEstado
         relojIA.Restart();
         relojIniciado = false;
         StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
-        EventManager.Instancia.SiguienteTurnoParaRobar();
         TurnManager.Instance.PasarTurno();
     }
 }

@@ -13,6 +13,7 @@ namespace Practica_Final;
 public class ElJuego
 {
     private bool trampaBloqueada = false;
+    private bool turnoConfirmadoPendiente = false;
     private void TrucosDebug()
     {
         // Solo permitimos un click a la vez para no borrar a todos en 1 milisegundo
@@ -150,12 +151,18 @@ public class ElJuego
         Mazo<Carta>.Instancia.Barajar();
         Interfaz.Instancia.GenerarVentana();
         TurnManager.Instance.InicializarJugadorActual();
+        Interfaz.Instancia.AsignarHuecoDeJugador(TurnManager.Instance.jugadoresVivos);
         BucleJuego();
     }
     public void BucleJuego()
     {
         while (Interfaz.Instancia.Ventana.IsOpen && haEmpezadoElJuego)
         {
+            if (turnoConfirmadoPendiente && Interfaz.Instancia.AnimacionesActivas.Count == 0)
+            {
+                turnoConfirmadoPendiente = false;
+                TurnManager.Instance.ConfirmarPasoDeTurno();
+            }
             TrucosDebug();
             bool hayAnimaciones = Interfaz.Instancia.AnimacionesActivas.Count > 0;
             
@@ -166,9 +173,9 @@ public class ElJuego
                 {
                     StateManager.Intancia.EstadoActual.ComportameintoIA();
                 }
-                else if (StateManager.Intancia.EstadoActual is Estado_EsperandoTrasJugada || TurnManager.Instance.JugadorActual is Jugador_Humano)
+                if (StateManager.Intancia.EstadoActual is Estado_EsperandoTrasJugada || TurnManager.Instance.JugadorActual is Jugador_Humano)
                 {
-                    StateManager.Intancia.EstadoActual.Inputs();
+                  StateManager.Intancia.EstadoActual.Inputs();
                 }
             }
             Interfaz.Instancia.Ventana.DispatchEvents();
@@ -213,5 +220,9 @@ public class ElJuego
     public void AsignarNombreJugador(string nombre)
     {
         nombreJugador = nombre;
+    }
+    public void MarcarTurnoPendiente()
+    {
+        turnoConfirmadoPendiente = true;
     }
 }

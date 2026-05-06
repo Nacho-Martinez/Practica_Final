@@ -53,7 +53,7 @@ public class Mazo<T> where T : Carta
              return;
          }
          TurnManager.Instance.JugadorActual.Mano.Add(cartaRobar);
-         TurnManager.Instance.ConfirmarPasoDeTurno();
+         ElJuego.Instancia.MarcarTurnoPendiente();
         });
         
     }

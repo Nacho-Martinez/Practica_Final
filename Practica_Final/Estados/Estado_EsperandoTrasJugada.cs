@@ -18,6 +18,7 @@ public class Estado_EsperandoTrasJugada : IEstado
     private Random rand = new Random();
     private bool iaHaJugadoNope = false;
     private bool seHaIntentadoJugarNope = false;
+    private Jugador_Robot robotQueJugo = null;
 
     public Estado_EsperandoTrasJugada()
     {
@@ -30,6 +31,7 @@ public class Estado_EsperandoTrasJugada : IEstado
         {
             cronometro.Restart();
             relojIniciado = true;
+            robotQueJugo = TurnManager.Instance.JugadorActual as Jugador_Robot;
         }
         Interfaz.Instancia.DibujarRivales();
         jugadorActual = TurnManager.Instance.DevolverPrimerJugadorHumano();
@@ -67,21 +69,29 @@ public class Estado_EsperandoTrasJugada : IEstado
             relojIniciado = false;
             if (!ReactManager.Instance.EfectoCancelado)
             {
-
                 if (ReactManager.Instance.JugadaPendiente is IJugada jugada)
                 {
                     jugada.JugarCarta();
                 }
-
                 if (StateManager.Intancia.EstadoActual is Estado_EsperandoTrasJugada)
                 {
                     StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+                    if (robotQueJugo != null)
+                    {
+                        robotQueJugo.ReducirJugadas();
+                        robotQueJugo = null;
+                    }
                 }
             }
             else
             {
                 Console.WriteLine("[LOG] La carta fue NOPED. No hace nada.");
                 StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+                if (robotQueJugo != null)
+                {
+                    robotQueJugo.ReducirJugadas();
+                    robotQueJugo = null;
+                }
             }
             ReactManager.Instance.ResetearEfecto();
             iaHaJugadoNope = false;
@@ -205,6 +215,7 @@ public class Estado_EsperandoTrasJugada : IEstado
                     {
                         nope.JugarCarta();
                         ReactManager.Instance.ProcesarJugada(robot, carta);
+                        ReactManager.Instance.LimpiarJugadaPendiente();
                         cronometro.Restart();
                         return;
                     });

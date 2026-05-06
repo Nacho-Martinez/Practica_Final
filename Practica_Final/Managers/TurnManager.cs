@@ -16,6 +16,7 @@ public class TurnManager
 
     public void PasarTurnoSinRobar()
     {
+        indiceActual = jugadoresVivos.IndexOf(JugadorActual);
         indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
         JugadorActual = jugadoresVivos[indiceActual];
         EventManager.Instancia.SiguenteTurno();
@@ -36,6 +37,7 @@ public class TurnManager
             int indice = jugadoresVivos.IndexOf(JugadorActual);
             indice = (indice + 1) % jugadoresVivos.Count;
             JugadorActual = jugadoresVivos[indice];
+            indiceActual = indice;
         }
         else 
         {
@@ -88,5 +90,16 @@ public class TurnManager
         JugadorActual = null;
         jugadoresVivos.Clear();
         JugadorPendienteDeFavor = null;
+    }
+    public void EliminarJugador(Jugador jugador)
+    {
+        int indiceDelMuerto = jugadoresVivos.IndexOf(jugador);
+        jugadoresVivos.Remove(jugador);
+    
+        if (jugadoresVivos.Count > 0)
+        {
+            indiceActual = indiceDelMuerto % jugadoresVivos.Count;
+            JugadorActual = jugadoresVivos[indiceActual];
+        }
     }
 }

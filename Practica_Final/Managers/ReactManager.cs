@@ -12,7 +12,7 @@ public class ReactManager
 {
     public static ReactManager Instance = new ReactManager();
     public Carta JugadaPendiente { get; private set; }
-    public bool EfectoCancelado { get; private set; }
+    public bool EfectoCancelado { get; private set; } = false;
 
 
     public void ProcesarJugada(Jugador jugador,params Carta[] cartasJugadas)
@@ -59,5 +59,9 @@ public class ReactManager
     public void ResetearEfecto()
     {
         EfectoCancelado = false;
+    }
+    public void LimpiarJugadaPendiente()
+    {
+        JugadaPendiente = null;
     }
 }

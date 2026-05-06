@@ -56,6 +56,10 @@ public class Estado_ViendoFuturo : IEstado
         {
             relojIniciado = false;
             StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+            if (TurnManager.Instance.JugadorActual is Jugador_Robot robot) 
+            {
+                robot.ReducirJugadas();
+            }
         }
     }
 
