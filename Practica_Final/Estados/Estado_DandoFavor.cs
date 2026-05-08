@@ -12,6 +12,7 @@ public class Estado_DandoFavor : IEstado
 {
     private bool mousePulsado = false;
     private Random rand = new Random();
+    private bool iaHaDado = false;
     public void Dibujar()
     {
         Jugador jugadorActual = TurnManager.Instance.JugadorActual;
@@ -92,6 +93,7 @@ public class Estado_DandoFavor : IEstado
                      EventManager.Instancia.CartaDada();
                     });
                 }
+                
             }
             else if (posMundo.Y > 600 && posMundo.Y < 750)
             {
@@ -124,6 +126,18 @@ public class Estado_DandoFavor : IEstado
 
     public void ComportameintoIA()
     {
+        if (iaHaDado)
+        {
+            Console.WriteLine($"iaHaDado en estado: {iaHaDado} volviendo");
+            return;
+        }
+        if (TurnManager.Instance.JugadorActual.Mano.Count == 0)
+        {
+            EventManager.Instancia.CartaDada();
+            return;
+        }
+
+        iaHaDado = true;
         int numeroAleatorio = rand.Next(0, TurnManager.Instance.JugadorActual.Mano.Count);
         Carta cartaParaDar = TurnManager.Instance.JugadorActual.Mano[numeroAleatorio];
         Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(TurnManager.Instance.JugadorActual);
@@ -134,8 +148,15 @@ public class Estado_DandoFavor : IEstado
         {
          TurnManager.Instance.JugadorPendienteDeFavor.Mano.Add(cartaParaDar);
          EventManager.Instancia.CartaDada();
+         Resetear();
         });
         
+        
 
+    }
+    public void Resetear()
+    {
+        Console.WriteLine("Reseteando");
+        iaHaDado = false;
     }
 }

@@ -13,10 +13,13 @@ namespace Practica_Final;
 public class ElJuego
 {
     private bool trampaBloqueada = false;
-    private bool turnoConfirmadoPendiente = false;
+    public bool TurnoConfirmadoPendiente { get; private set; } = false;
+    public int TurnoSinRobarPendiente { get; private set; } = 0;
+    public bool HayTurnoSinRobarPendiente => TurnoSinRobarPendiente > 0;
+
     private void TrucosDebug()
     {
-        // Solo permitimos un click a la vez para no borrar a todos en 1 milisegundo
+        
         if (!SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.K) && 
             !SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.L))
         {
@@ -26,7 +29,7 @@ public class ElJuego
 
         if (trampaBloqueada) return;
 
-        // --- TECLA K: MATAR UNA IA (Probar Victoria) ---
+        
         if (SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.K))
         {
             for (int i = 0; i < TurnManager.Instance.jugadoresVivos.Count; i++)
@@ -37,12 +40,12 @@ public class ElJuego
                     TurnManager.Instance.jugadoresVivos.RemoveAt(i);
                     MotorJuego.Intancia.RevisarFInPartida();
                     trampaBloqueada = true;
-                    break; // Matamos solo a uno y salimos
+                    break; 
                 }
             }
         }
 
-        // --- TECLA L: MATAR AL HUMANO (Probar Derrota) ---
+        
         if (SFML.Window.Keyboard.IsKeyPressed(SFML.Window.Keyboard.Key.L))
         {
             for (int i = 0; i < TurnManager.Instance.jugadoresVivos.Count; i++)
@@ -158,48 +161,86 @@ public class ElJuego
     {
         while (Interfaz.Instancia.Ventana.IsOpen && haEmpezadoElJuego)
         {
-            if (turnoConfirmadoPendiente && Interfaz.Instancia.AnimacionesActivas.Count == 0)
+            try
             {
-                turnoConfirmadoPendiente = false;
-                TurnManager.Instance.ConfirmarPasoDeTurno();
+                TrucosDebug();
+                bool hayAnimaciones = Interfaz.Instancia.AnimacionesActivas.Count > 0;
+
+                if (!hayAnimaciones)
+                {
+                    Jugador jugadorActual = TurnManager.Instance.JugadorActual;
+                    if (jugadorActual is Jugador_Robot)
+                    {
+                        StateManager.Intancia.EstadoActual.ComportameintoIA();
+                    }
+
+                    if (StateManager.Intancia.EstadoActual is Estado_EsperandoTrasJugada ||
+                        TurnManager.Instance.JugadorActual is Jugador_Humano)
+                    {
+                        StateManager.Intancia.EstadoActual.Inputs();
+                    }
+                }
+
+                if (TurnoConfirmadoPendiente && Interfaz.Instancia.AnimacionesActivas.Count == 0 && StateManager.Intancia.EstadoActual is Estado_Normal)
+                {
+                    Console.WriteLine("[DEBUG] Procesando turnoConfirmadoPendiente");
+                    TurnoConfirmadoPendiente = false;
+                    TurnoSinRobarPendiente = 0;
+                    TurnManager.Instance.ConfirmarPasoDeTurno();
+                }
+                if (TurnoSinRobarPendiente > 0 && 
+                    Interfaz.Instancia.AnimacionesActivas.Count == 0 &&
+                    StateManager.Intancia.EstadoActual is Estado_Normal)
+                {
+                    TurnoSinRobarPendiente--;
+                    if (TurnoSinRobarPendiente == 0)
+                    {
+                        int indice = TurnManager.Instance.jugadoresVivos.IndexOf(TurnManager.Instance.JugadorActual);
+                        indice = (indice + 1) % TurnManager.Instance.jugadoresVivos.Count;
+                        TurnManager.Instance.DarTurno(TurnManager.Instance.jugadoresVivos[indice]);
+                        Console.WriteLine("[DEBUG] Procesando turnoSinRobarPendiente");
+                        EventManager.Instancia.SiguenteTurno();
+                    }
+                }
+
+
+                Interfaz.Instancia.Ventana.DispatchEvents();
+                Interfaz.Instancia.Ventana.Clear(new Color(30, 30, 30));
+                Interfaz.Instancia.DibujarFondo();
+                Interfaz.Instancia.Ventana.Draw(Interfaz.Instancia.BotonJugar);
+                Interfaz.Instancia.DibujarCartasJugadas();
+                Interfaz.Instancia.Ventana.Draw(Interfaz.Instancia.BotonSaltarTurno);
+                StateManager.Intancia.EstadoActual.Dibujar();
+                Interfaz.Instancia.MostrarTurnoActual();
+
+                for (int i = Interfaz.Instancia.AnimacionesActivas.Count - 1; i >= 0; i--)
+                {
+                    Animaciones anim = Interfaz.Instancia.AnimacionesActivas[i];
+                    Interfaz.Instancia.Ventana.Draw(anim.Carta);
+
+                    if (anim.Actualizar())
+                    {
+                        try
+                        {
+                         anim.AlTerminar?.Invoke();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"[ERROR CALLBACK] {e.GetType().Name}: {e.Message}");
+                            Console.WriteLine(e.StackTrace);
+                        }
+                        
+                        Interfaz.Instancia.AnimacionesActivas.RemoveAt(i);
+                    }
+                }
+
+                Interfaz.Instancia.Ventana.Display();
             }
-            TrucosDebug();
-            bool hayAnimaciones = Interfaz.Instancia.AnimacionesActivas.Count > 0;
-            
-            if (!hayAnimaciones)
+            catch (Exception e)
             {
-                Jugador jugadorActual = TurnManager.Instance.JugadorActual;
-                if (jugadorActual is Jugador_Robot)
-                {
-                    StateManager.Intancia.EstadoActual.ComportameintoIA();
-                }
-                if (StateManager.Intancia.EstadoActual is Estado_EsperandoTrasJugada || TurnManager.Instance.JugadorActual is Jugador_Humano)
-                {
-                  StateManager.Intancia.EstadoActual.Inputs();
-                }
+                Console.WriteLine($"[ERROR] {e.GetType().Name}: {e.Message}");
+                Console.WriteLine(e.StackTrace);
             }
-            Interfaz.Instancia.Ventana.DispatchEvents();
-            Interfaz.Instancia.Ventana.Clear(new Color(30,30,30));
-            Interfaz.Instancia.DibujarFondo();
-            Interfaz.Instancia.Ventana.Draw(Interfaz.Instancia.BotonJugar);
-            Interfaz.Instancia.DibujarCartasJugadas();
-            Interfaz.Instancia.Ventana.Draw(Interfaz.Instancia.BotonSaltarTurno);
-            StateManager.Intancia.EstadoActual.Dibujar();
-            Interfaz.Instancia.MostrarTurnoActual();
-           
-            for (int i = Interfaz.Instancia.AnimacionesActivas.Count - 1; i >= 0; i--)
-            {
-                Animaciones anim = Interfaz.Instancia.AnimacionesActivas[i];
-                Interfaz.Instancia.Ventana.Draw(anim.Carta);
-        
-                if (anim.Actualizar())
-                {
-                    anim.AlTerminar?.Invoke();
-                    Interfaz.Instancia.AnimacionesActivas.RemoveAt(i);
-                }
-            }
-           
-            Interfaz.Instancia.Ventana.Display();
         }
     }
 
@@ -223,6 +264,15 @@ public class ElJuego
     }
     public void MarcarTurnoPendiente()
     {
-        turnoConfirmadoPendiente = true;
+        TurnoConfirmadoPendiente = true;
+    }
+    public void MarcarTurnoSinRobarPendiente()
+    {
+        TurnoSinRobarPendiente = 2;
+    }
+    public void LimpiarFlagsPendientes()
+    {
+        TurnoConfirmadoPendiente = false;
+        TurnoSinRobarPendiente = 0;
     }
 }

@@ -54,7 +54,6 @@ public class StateManager
         {
             diccionarioEstados[estado] = new Estado_EleccionDificultad();
         }
-    
         EstadoActual = diccionarioEstados[estado];
         
     }

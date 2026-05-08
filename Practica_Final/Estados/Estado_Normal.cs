@@ -171,6 +171,9 @@ public class Estado_Normal : IEstado
 
     public void ComportameintoIA()
     {
+        Console.WriteLine($"[DEBUG ComportamientoIA] JugadorActual: {TurnManager.Instance.JugadorActual.Nombre}");
+        if (ElJuego.Instancia.HayTurnoSinRobarPendiente) return;
+        if (ElJuego.Instancia.TurnoConfirmadoPendiente) return;
         if (TurnManager.Instance.JugadorActual is Jugador_Robot iaActual)
         {
             iaActual.JugarCarta();

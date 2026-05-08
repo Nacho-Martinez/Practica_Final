@@ -70,12 +70,19 @@ public class ComportamientoMedio : Comportamiento
         if (!jugarPasiva && cartasAgresivas.Count == 0) jugarPasiva = true;
         if (jugarPasiva)
         {
-            do
+            List<Carta> cartasPasivasValidas = cartasPasivas
+                .Where(c => c is not Carta_Gato)
+                .ToList();
+    
+            if (cartasPasivasValidas.Count == 0)
             {
-                randCarta = rand.Next(0, cartasPasivas.Count);
-                
-            } while (cartasPasivas[randCarta] is Carta_Gato);
-            return [cartasPasivas[randCarta]];
+                if (cartasAgresivas.Count == 0) return null;
+                randCarta = rand.Next(0, cartasAgresivas.Count);
+                return [cartasAgresivas[randCarta]];
+            }
+    
+            randCarta = rand.Next(0, cartasPasivasValidas.Count);
+            return [cartasPasivasValidas[randCarta]];
         }
         else
         {
@@ -112,6 +119,6 @@ public class ComportamientoMedio : Comportamiento
 
     public override int NumeroDeJugadas()
     {
-        return rand.Next(0, 3);
+        return rand.Next(1, 4);
     }
 }

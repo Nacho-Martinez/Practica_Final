@@ -45,15 +45,24 @@ public class Mazo<T> where T : Carta
 
         Interfaz.Instancia.LanzarAnimacion(text,inicio,final,0.4f, () =>
         {
-            Console.WriteLine("[LOG] La Animacion de robar ha terminado");
-         if (cartaRobar is Carta_Explosion)
-         {
-             Interfaz.Instancia.cartaBomba = cartaRobar;
-             EventManager.Instancia.GatoBoom();
-             return;
-         }
-         TurnManager.Instance.JugadorActual.Mano.Add(cartaRobar);
-         ElJuego.Instancia.MarcarTurnoPendiente();
+            try
+            {
+                Console.WriteLine("[LOG] La Animacion de robar ha terminado");
+                if (cartaRobar is Carta_Explosion)
+                {
+                    Interfaz.Instancia.cartaBomba = cartaRobar;
+                    EventManager.Instancia.GatoBoom();
+                    return;
+                }
+
+                TurnManager.Instance.JugadorActual.Mano.Add(cartaRobar);
+                ElJuego.Instancia.MarcarTurnoPendiente();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[ERROR ROBAR] {e.GetType().Name}: {e.Message}");
+                Console.WriteLine(e.StackTrace);
+            }
         });
         
     }

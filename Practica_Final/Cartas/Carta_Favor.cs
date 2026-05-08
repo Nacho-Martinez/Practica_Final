@@ -1,4 +1,5 @@
 ﻿using Practica_Final.BarajaCartas;
+using Practica_Final.Estados;
 using Practica_Final.Interfaces;
 using Practica_Final.Jugadores;
 using Practica_Final.Managers;
@@ -10,11 +11,11 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
 {
     private Random rand = new Random();
     public Carta_Favor(string Nombre, string  Dibujo) : base(Nombre, Dibujo)
-    {
-    }
+     {
+     }
 
     public void JugarCarta()
-    { 
+    {
         EventManager.Instancia.EnCartaDada += VolverTurno;
         if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
         {
@@ -33,20 +34,24 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
         EventManager.Instancia.EnJugadorSeleccionado += ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado += Logica;
     }
-    
     private void VolverTurno()
     {
         LimpiarEventos();
+        Jugador jugadorOriginal = TurnManager.Instance.JugadorPendienteDeFavor;
         TurnManager.Instance.DarTurno(TurnManager.Instance.JugadorPendienteDeFavor);
         StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+        if (jugadorOriginal is Jugador_Robot robot)
+        {
+            robot.ReducirJugadas();
+        }
     }
 
     private void Logica(Jugador objetivo)
     {
         TurnManager.Instance.AsignarJugadorPendienteDeFavor(TurnManager.Instance.JugadorActual); 
         TurnManager.Instance.DarTurno(objetivo);
-        StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
-        
+        EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
+        EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
     }
 
     public void ElegirObjetivo()
@@ -55,11 +60,70 @@ public class Carta_Favor :Carta,IJugada,IObjetivo
         StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
     }
     
-    
     private void LimpiarEventos()
     {
         EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
         EventManager.Instancia.EnCartaDada -= VolverTurno;
     }
+    // private Random rand = new Random();
+    // public Carta_Favor(string Nombre, string  Dibujo) : base(Nombre, Dibujo)
+    // {
+    // }
+    //
+    // public void JugarCarta()
+    // { 
+    //     EventManager.Instancia.EnCartaDada += VolverTurno;
+    //     if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
+    //     {
+    //         int indiceEnemigo;
+    //         Jugador objetivo;
+    //         do
+    //         {
+    //             objetivo = TurnManager.Instance.jugadoresVivos[rand.Next(0, TurnManager.Instance.jugadoresVivos.Count)];
+    //             
+    //         } while (objetivo == TurnManager.Instance.JugadorActual);
+    //         Logica(objetivo);
+    //         return;
+    //     }
+    //     Interfaz.Instancia.IndiceEnemigo = 0;
+    //     StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoAtaque);
+    //     EventManager.Instancia.EnJugadorSeleccionado += ElegirObjetivo;
+    //     EventManager.Instancia.EnJugadorCOnfirmado += Logica;
+    // }
+    //
+    // private void VolverTurno()
+    // {
+    //     LimpiarEventos();
+    //     Jugador jugadorOriginal = TurnManager.Instance.JugadorPendienteDeFavor;
+    //     TurnManager.Instance.DarTurno(TurnManager.Instance.JugadorPendienteDeFavor);
+    //     StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+    //     if (jugadorOriginal is Jugador_Robot robot)
+    //     {
+    //         robot.ReducirJugadas();
+    //     }
+    // }
+    //
+    // private void Logica(Jugador objetivo)
+    // {
+    //     TurnManager.Instance.AsignarJugadorPendienteDeFavor(TurnManager.Instance.JugadorActual); 
+    //     TurnManager.Instance.DarTurno(objetivo);
+    //     LimpiarEventos();
+    //     //StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
+    //     
+    // }
+    //
+    // public void ElegirObjetivo()
+    // {
+    //     EventManager.Instancia.JugadorConfirmado(TurnManager.Instance.jugadoresVivos[Interfaz.Instancia.IndiceEnemigo]);
+    //     StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
+    // }
+    //
+    //
+    // private void LimpiarEventos()
+    // {
+    //     EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
+    //     EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
+    //     EventManager.Instancia.EnCartaDada -= VolverTurno;
+    // }
 }

@@ -25,6 +25,7 @@ public class Carta_Gato : Carta,IJugada,IObjetivo
 
     public void JugarCarta()
     {
+        EventManager.Instancia.EnCartaDada += VolverTurno;
         if (TurnManager.Instance.JugadorActual is not Jugador_Humano)
         {
             int indiceEnemigo;
@@ -41,12 +42,17 @@ public class Carta_Gato : Carta,IJugada,IObjetivo
         StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoAtaque);
         EventManager.Instancia.EnJugadorSeleccionado += ElegirObjetivo;
         EventManager.Instancia.EnJugadorCOnfirmado += Logica;
-        EventManager.Instancia.EnCartaDada += VolverTurno;
     }
     private void VolverTurno()
     {
+        LimpiarEventos();
+        Jugador jugadorOriginal = TurnManager.Instance.JugadorPendienteDeFavor;
         TurnManager.Instance.DarTurno(TurnManager.Instance.JugadorPendienteDeFavor);
         StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+        if (jugadorOriginal is Jugador_Robot robot)
+        {
+            robot.ReducirJugadas();
+        }
     }
 
     private void Logica(Jugador objetivo)
@@ -61,5 +67,12 @@ public class Carta_Gato : Carta,IJugada,IObjetivo
     {
         EventManager.Instancia.JugadorConfirmado(TurnManager.Instance.jugadoresVivos[Interfaz.Instancia.IndiceEnemigo]);
         StateManager.Intancia.CambiarEstado(StateManager.Estados.DandoFavor);
+    }
+    
+    private void LimpiarEventos()
+    {
+        EventManager.Instancia.EnJugadorSeleccionado -= ElegirObjetivo;
+        EventManager.Instancia.EnJugadorCOnfirmado -= Logica;
+        EventManager.Instancia.EnCartaDada -= VolverTurno;
     }
 }

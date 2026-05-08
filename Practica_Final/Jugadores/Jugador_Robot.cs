@@ -15,6 +15,8 @@ public class Jugador_Robot:Jugador
     private Random rand = new Random();
     public Comportamiento MiComportamiento { get; }
     private int numeroJugadas = -1;
+    private bool jugandoCarta = false;
+    private bool esperandoRobo = false;
 
     public Jugador_Robot(string nombre,Comportamiento comportamiento) : base(nombre)
     {
@@ -24,17 +26,28 @@ public class Jugador_Robot:Jugador
     public override void IniciarTurno()
     {
         if (TurnManager.Instance.JugadorActual != this) return; 
+        Console.WriteLine($"[DEBUG IniciarTurno] {Nombre} inicia turno, animaciones: {Interfaz.Instancia.AnimacionesActivas.Count}");
         MiComportamiento.RellenarListas(this);
         numeroJugadas = MiComportamiento.NumeroDeJugadas();
+        esperandoRobo = false;
     }
 
     public void JugarCarta()
     {
+        Console.WriteLine($"[DEBUG JugarCarta] {Nombre} intenta jugar, numeroJugadas: {numeroJugadas}, animaciones: {Interfaz.Instancia.AnimacionesActivas.Count}");
+        if (ElJuego.Instancia.HayTurnoSinRobarPendiente) return;
+        if (ElJuego.Instancia.TurnoConfirmadoPendiente) return;
+        if (jugandoCarta) return;
         bool puedeJugar = false;
-        if (numeroJugadas < 0)
+        if (numeroJugadas <= 0)
         {
-            if (TurnManager.Instance.JugadorActual == this)
+            if (TurnManager.Instance.JugadorActual == this && !esperandoRobo && !ElJuego.Instancia.TurnoConfirmadoPendiente &&
+                !ElJuego.Instancia.HayTurnoSinRobarPendiente)
+            {
+                esperandoRobo = true;
                 TurnManager.Instance.PasarTurno();
+            }
+
             return;
         }
         if(TurnManager.Instance.JugadorActual != this)return;
@@ -52,6 +65,7 @@ public class Jugador_Robot:Jugador
             return;
         }
         Carta[] cartasElegidas = MiComportamiento.CartasParaJugar();
+        Console.WriteLine($"[DEBUG CartasElegidas] {Nombre}: {(cartasElegidas == null ? "null" : string.Join(", ", cartasElegidas.Select(c => c.Nombre)))}");
         if (cartasElegidas == null)
         {
             Console.WriteLine($"[IA] {Nombre} no tiene jugadas y pasa el turno.");
@@ -59,13 +73,18 @@ public class Jugador_Robot:Jugador
             return;
         }
 
-
+        jugandoCarta = true;   
         int cantidad = cartasElegidas.Length;
         if (cantidad == 1)
         {
             Carta cartaJugada = cartasElegidas[0];
             if (cartasElegidas[0] is not IJugada cartaParaJugar || cartasElegidas[0] is Carta_Gato ||
-                cartasElegidas[0] is Carta_Defuser || cartasElegidas[0] is Carta_Nope) return;
+                cartasElegidas[0] is Carta_Defuser || cartasElegidas[0] is Carta_Nope)
+            {
+                jugandoCarta = false;
+                numeroJugadas = 0;
+                return;
+            }
             
            
             float posXInicio = 100f ;
@@ -73,10 +92,10 @@ public class Jugador_Robot:Jugador
             Vector2f posInicio = Interfaz.Instancia.ObtenerPosicionRobot(this);
             Vector2f posDestino = new Vector2f(720f, 300f); 
             Texture tex = SpritesManager.Instancia.ConseguirTextura(cartaJugada.Dibujo);
-                            
+            jugandoCarta = true;            
             Interfaz.Instancia.LanzarAnimacion(tex, posInicio, posDestino, 0.4f, () => 
             {
-                                
+                jugandoCarta = false;            
                 ReactManager.Instance.MeterJugadaEnCola(cartaJugada);
                 ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
                 if (cartaJugada is IForzarFinTurno) // <- añade esto
@@ -85,6 +104,7 @@ public class Jugador_Robot:Jugador
                 }
                 StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
             });
+            jugandoCarta = true;
            
         }
         else if (cantidad == 2)
@@ -106,7 +126,12 @@ public class Jugador_Robot:Jugador
             if (cartasElegidas[0] is IJugada cartaParaJugar && cartasElegidas[1]is Carta_Gato cartaComprobarTipo)
             {
                 if (tipoRequerido == Carta_Gato.TiposGato.Ninguno ||
-                    cartaComprobarTipo.tipoGato != tipoRequerido) return;
+                    cartaComprobarTipo.tipoGato != tipoRequerido)
+                {
+                    jugandoCarta = false;
+                    numeroJugadas = 0;
+                    return;
+                }
                 
                 
                                 
@@ -120,10 +145,12 @@ public class Jugador_Robot:Jugador
                 Interfaz.Instancia.LanzarAnimacion(tex2, posInicio2, posDestino2, 0.4f);
                 Interfaz.Instancia.LanzarAnimacion(tex1, posInicio1, posDestino1, 0.4f, () => 
                 {
+                    jugandoCarta = false;
                     ReactManager.Instance.MeterJugadaEnCola(cartasElegidas[0]);
                     ReactManager.Instance.ProcesarJugada(this,cartasElegidas);
                     StateManager.Intancia.CambiarEstado(StateManager.Estados.EsperandoTrasJugada);
                 });
+                jugandoCarta = true;
             }
         }
         if(TurnManager.Instance.JugadorActual != this)return;
@@ -148,7 +175,7 @@ public class Jugador_Robot:Jugador
     public void ReducirJugadas()
     {
         numeroJugadas--;
-        if (numeroJugadas <= 0)
+        if (numeroJugadas <= 0 && !ElJuego.Instancia.HayTurnoSinRobarPendiente)
         {
             TurnManager.Instance.PasarTurno();
         }

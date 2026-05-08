@@ -1,4 +1,5 @@
 ﻿using Practica_Final.Jugadores;
+using SFML.Graphics;
 
 namespace Practica_Final.Managers;
 
@@ -16,10 +17,8 @@ public class TurnManager
 
     public void PasarTurnoSinRobar()
     {
-        indiceActual = jugadoresVivos.IndexOf(JugadorActual);
-        indiceActual = (indiceActual + 1) % jugadoresVivos.Count;
-        JugadorActual = jugadoresVivos[indiceActual];
-        EventManager.Instancia.SiguenteTurno();
+        
+        ElJuego.Instancia.MarcarTurnoSinRobarPendiente();
     }
     public void PasarTurno()
     {
@@ -28,6 +27,7 @@ public class TurnManager
 
     public void ConfirmarPasoDeTurno()
     {
+        ElJuego.Instancia.LimpiarFlagsPendientes();
         string nombreAnterior = JugadorActual.Nombre;
         int indiceAnterior = jugadoresVivos.IndexOf(JugadorActual);
         

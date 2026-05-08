@@ -70,7 +70,7 @@ public class Interfaz
         Text textoTurno = new Text(Fuente, $"Turno de: {TurnManager.Instance.JugadorActual.Nombre}");
         textoTurno.CharacterSize = 24;
         textoTurno.FillColor = Color.Black; 
-        textoTurno.Position = new Vector2f(950, 30); 
+        textoTurno.Position = new Vector2f(850, 30); 
 
         Ventana.Draw(textoTurno);
     }

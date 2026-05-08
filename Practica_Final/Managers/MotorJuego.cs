@@ -33,8 +33,11 @@ public class MotorJuego
             Console.WriteLine($"[EXPLOSIÓN] {TurnManager.Instance.JugadorActual.Nombre} ha muerto.");
             TurnManager.Instance.EliminarJugador(TurnManager.Instance.JugadorActual);
             RevisarFInPartida();
-            StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
-            TurnManager.Instance.PasarTurno();
+            if (ElJuego.Instancia.haEmpezadoElJuego)
+            {
+                StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
+                EventManager.Instancia.SiguenteTurno();
+            }
             return;
         }
         StateManager.Intancia.CambiarEstado(StateManager.Estados.DefusandoBomba);
