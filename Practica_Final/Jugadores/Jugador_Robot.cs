@@ -26,7 +26,7 @@ public class Jugador_Robot:Jugador
     public override void IniciarTurno()
     {
         if (TurnManager.Instance.JugadorActual != this) return; 
-        Console.WriteLine($"[DEBUG IniciarTurno] {Nombre} inicia turno, animaciones: {Interfaz.Instancia.AnimacionesActivas.Count}");
+        //Console.WriteLine($"[DEBUG IniciarTurno] {Nombre} inicia turno, animaciones: {Interfaz.Instancia.AnimacionesActivas.Count}");
         MiComportamiento.RellenarListas(this);
         numeroJugadas = MiComportamiento.NumeroDeJugadas();
         esperandoRobo = false;
@@ -34,7 +34,7 @@ public class Jugador_Robot:Jugador
 
     public void JugarCarta()
     {
-        Console.WriteLine($"[DEBUG JugarCarta] {Nombre} intenta jugar, numeroJugadas: {numeroJugadas}, animaciones: {Interfaz.Instancia.AnimacionesActivas.Count}");
+        //Console.WriteLine($"[DEBUG JugarCarta] {Nombre} intenta jugar, numeroJugadas: {numeroJugadas}, animaciones: {Interfaz.Instancia.AnimacionesActivas.Count}");
         if (ElJuego.Instancia.HayTurnoSinRobarPendiente) return;
         if (ElJuego.Instancia.TurnoConfirmadoPendiente) return;
         if (jugandoCarta) return;
@@ -65,10 +65,10 @@ public class Jugador_Robot:Jugador
             return;
         }
         Carta[] cartasElegidas = MiComportamiento.CartasParaJugar();
-        Console.WriteLine($"[DEBUG CartasElegidas] {Nombre}: {(cartasElegidas == null ? "null" : string.Join(", ", cartasElegidas.Select(c => c.Nombre)))}");
+        //Console.WriteLine($"[DEBUG CartasElegidas] {Nombre}: {(cartasElegidas == null ? "null" : string.Join(", ", cartasElegidas.Select(c => c.Nombre)))}");
         if (cartasElegidas == null)
         {
-            Console.WriteLine($"[IA] {Nombre} no tiene jugadas y pasa el turno.");
+            //Console.WriteLine($"[IA] {Nombre} no tiene jugadas y pasa el turno.");
             TurnManager.Instance.PasarTurno();
             return;
         }
@@ -164,7 +164,7 @@ public class Jugador_Robot:Jugador
             ReactManager.Instance.ProcesarJugada(this, carta);
             foreach (var Var in Mano)
             {
-                Console.WriteLine($"Carta: {Var.Nombre}");
+               // Console.WriteLine($"Carta: {Var.Nombre}");
             }
         }
     }

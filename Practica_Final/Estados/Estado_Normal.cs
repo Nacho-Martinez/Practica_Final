@@ -72,7 +72,7 @@ public class Estado_Normal : IEstado
                         if (cantidad == 1)
                         {
                             Carta cartaJugada = cartasElegidas[0];
-                            Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
+                            //Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
                             
                             if (cartasElegidas[0] is not IJugada cartaParaJugar || cartasElegidas[0] is Carta_Gato ||
                                 cartasElegidas[0] is Carta_Defuser || cartasElegidas[0] is Carta_Nope) return;
@@ -171,7 +171,7 @@ public class Estado_Normal : IEstado
 
     public void ComportameintoIA()
     {
-        Console.WriteLine($"[DEBUG ComportamientoIA] JugadorActual: {TurnManager.Instance.JugadorActual.Nombre}");
+        //Console.WriteLine($"[DEBUG ComportamientoIA] JugadorActual: {TurnManager.Instance.JugadorActual.Nombre}");
         if (ElJuego.Instancia.HayTurnoSinRobarPendiente) return;
         if (ElJuego.Instancia.TurnoConfirmadoPendiente) return;
         if (TurnManager.Instance.JugadorActual is Jugador_Robot iaActual)

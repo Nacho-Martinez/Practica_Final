@@ -5,7 +5,7 @@ namespace Practica_Final.Managers;
 
 public class TurnManager
 {
-    public Jugador VictimaDelFavor { get; set; }
+    
     public List<Jugador> jugadoresVivos { get; private set; } = new List<Jugador>();
     private int indiceActual = 0;
     private int turnosRestantes;
@@ -48,12 +48,12 @@ public class TurnManager
         int indiceNuevo = jugadoresVivos.IndexOf(JugadorActual);
         int totalVivos = jugadoresVivos.Count;
         
-        Console.WriteLine("\n" + new string('=', 40));
-        Console.WriteLine($" [CAMBIO DE TURNO]");
-        Console.WriteLine($" Sale: {nombreAnterior} (Pos: {indiceAnterior})");
-        Console.WriteLine($" Entra: {nombreNuevo} (Pos: {indiceNuevo})");
-        Console.WriteLine($" Jugadores restantes: {totalVivos}");
-        Console.WriteLine(new string('=', 40) + "\n");
+        // Console.WriteLine("\n" + new string('=', 40));
+        // Console.WriteLine($" [CAMBIO DE TURNO]");
+        // Console.WriteLine($" Sale: {nombreAnterior} (Pos: {indiceAnterior})");
+        // Console.WriteLine($" Entra: {nombreNuevo} (Pos: {indiceNuevo})");
+        // Console.WriteLine($" Jugadores restantes: {totalVivos}");
+        // Console.WriteLine(new string('=', 40) + "\n");
         
         EventManager.Instancia.SiguenteTurno();
     }

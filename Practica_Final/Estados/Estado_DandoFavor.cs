@@ -128,7 +128,7 @@ public class Estado_DandoFavor : IEstado
     {
         if (iaHaDado)
         {
-            Console.WriteLine($"iaHaDado en estado: {iaHaDado} volviendo");
+            //Console.WriteLine($"iaHaDado en estado: {iaHaDado} volviendo");
             return;
         }
         if (TurnManager.Instance.JugadorActual.Mano.Count == 0)
@@ -156,7 +156,7 @@ public class Estado_DandoFavor : IEstado
     }
     public void Resetear()
     {
-        Console.WriteLine("Reseteando");
+        //Console.WriteLine("Reseteando");
         iaHaDado = false;
     }
 }

@@ -76,7 +76,7 @@ public class Estado_DefusandoBomba : IEstado
                         int cantidad = cartasElegidas.Count;
                         if (cantidad == 1)
                         {
-                            Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
+                            //Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
                             if (cartasElegidas[0] is Carta_Defuser && cartasElegidas[0] is IJugada cartaParaJugar)
                             {
                                 cartaParaJugar.JugarCarta();
@@ -146,7 +146,7 @@ public class Estado_DefusandoBomba : IEstado
             }
         }
         
-        Console.WriteLine($"[IA] La ia {TurnManager.Instance.JugadorActual.Nombre} no ha encontrado un defuser en su mano");
+        //Console.WriteLine($"[IA] La ia {TurnManager.Instance.JugadorActual.Nombre} no ha encontrado un defuser en su mano");
         TurnManager.Instance.jugadoresVivos.Remove(TurnManager.Instance.JugadorActual);
     }
 }

@@ -28,7 +28,7 @@ public class EventManager
 
     public void SiguienteTurnoParaRobar()
     {
-        Console.WriteLine($"[DEBUG ParaRobar] Invocando, suscriptores: {EnSigueinteTurnoParaRobar?.GetInvocationList().Length}");
+        //Console.WriteLine($"[DEBUG ParaRobar] Invocando, suscriptores: {EnSigueinteTurnoParaRobar?.GetInvocationList().Length}");
         EnSigueinteTurnoParaRobar?.Invoke();
     }
 
@@ -49,7 +49,7 @@ public class EventManager
 
     public void SiguenteTurno()
     {
-        Console.WriteLine($"[DEBUG SiguenteTurno] Invocando, suscriptores: {EnSiguienteTurno?.GetInvocationList().Length}");
+        //Console.WriteLine($"[DEBUG SiguenteTurno] Invocando, suscriptores: {EnSiguienteTurno?.GetInvocationList().Length}");
         EnSiguienteTurno?.Invoke();
     }
     

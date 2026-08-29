@@ -19,7 +19,7 @@ public class Estado_ViendoFuturo : IEstado
         {
             cronometroFuturo.Restart();
             relojIniciado = true;
-            Console.WriteLine("[DEBUG] Entrando en ViendoFuturo - Cronómetro iniciado");
+            //Console.WriteLine("[DEBUG] Entrando en ViendoFuturo - Cronómetro iniciado");
         }
         if (TurnManager.Instance.JugadorActual is Jugador_Robot)
         {

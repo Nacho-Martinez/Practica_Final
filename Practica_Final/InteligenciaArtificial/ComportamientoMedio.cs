@@ -60,7 +60,7 @@ public class ComportamientoMedio : Comportamiento
     {
         if (cartasPasivas.Count == 0 && cartasAgresivas.Count == 0)
         {
-            Console.WriteLine("No hay cartas el las listas");
+            //Console.WriteLine("No hay cartas el las listas");
             return null;
         }
         int randomNum = rand.Next(0, 11);
@@ -105,7 +105,7 @@ public class ComportamientoMedio : Comportamiento
                 }
                 else
                 {
-                    Console.WriteLine("NO ha encontrado pareja para su gato");
+                    //Console.WriteLine("NO ha encontrado pareja para su gato");
                     return null;
                 }
             }

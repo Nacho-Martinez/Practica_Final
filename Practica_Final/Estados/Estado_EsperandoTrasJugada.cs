@@ -85,7 +85,7 @@ public class Estado_EsperandoTrasJugada : IEstado
             }
             else
             {
-                Console.WriteLine("[LOG] La carta fue NOPED. No hace nada.");
+                //Console.WriteLine("[LOG] La carta fue NOPED. No hace nada.");
                 StateManager.Intancia.CambiarEstado(StateManager.Estados.Normal);
                 if (robotQueJugo != null)
                 {
@@ -121,7 +121,7 @@ public class Estado_EsperandoTrasJugada : IEstado
                         int cantidad = cartasElegidas.Count;
                         if (cantidad == 1)
                         {
-                            Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
+                            //Console.WriteLine($"[LOG] Jugando carta simple: {cartasElegidas[0].Nombre}");
                             
                             if (cartasElegidas[0] is IJugada cartaParaJugar && cartasElegidas[0] is Carta_Nope)
                             {

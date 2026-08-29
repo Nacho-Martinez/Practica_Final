@@ -24,7 +24,7 @@ public class Carta_Ataque : Carta ,IJugada,IObjetivo,IForzarFinTurno
              indiceEnemigo = rand.Next(0, TurnManager.Instance.jugadoresVivos.Count);
                 
             } while (TurnManager.Instance.jugadoresVivos[indiceEnemigo] == TurnManager.Instance.JugadorActual);
-            Console.WriteLine($"Jugador atacado:{TurnManager.Instance.jugadoresVivos[indiceEnemigo].Nombre}");
+            //Console.WriteLine($"Jugador atacado:{TurnManager.Instance.jugadoresVivos[indiceEnemigo].Nombre}");
             Logica(TurnManager.Instance.jugadoresVivos[indiceEnemigo]);
             return;
         }

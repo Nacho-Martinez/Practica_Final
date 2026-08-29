@@ -30,7 +30,7 @@ public class MotorJuego
 
         if (!tieneDefuser)
         {
-            Console.WriteLine($"[EXPLOSIÓN] {TurnManager.Instance.JugadorActual.Nombre} ha muerto.");
+            //Console.WriteLine($"[EXPLOSIÓN] {TurnManager.Instance.JugadorActual.Nombre} ha muerto.");
             TurnManager.Instance.EliminarJugador(TurnManager.Instance.JugadorActual);
             RevisarFInPartida();
             if (ElJuego.Instancia.haEmpezadoElJuego)

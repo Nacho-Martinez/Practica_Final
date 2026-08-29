@@ -19,17 +19,17 @@ public class ReactManager
         {
             if (cartasJugadas != null && cartasJugadas.Length > 0)
             {
-                Console.WriteLine("Procesar jugada Ia");
+                //Console.WriteLine("Procesar jugada Ia");
                 Interfaz.Instancia.RellenarCartasJugadas(cartasJugadas);
                 foreach (var carta in cartasJugadas)
                 {
-                    Console.WriteLine($"Carta para eliminar: {carta.Nombre}");
+                    //Console.WriteLine($"Carta para eliminar: {carta.Nombre}");
                     jugador.Mano.Remove(carta);
                 }
             }
             else
             {
-                Console.WriteLine("Procesar jugada Jugador");
+               // Console.WriteLine("Procesar jugada Jugador");
                 List<Carta> cartasHumano = new List<Carta>();
                 foreach (var indice in  Interfaz.Instancia.IndicesSeleccionados)
                 {
@@ -42,13 +42,13 @@ public class ReactManager
              }
              Interfaz.Instancia.IndicesSeleccionados.Clear();
             }
-            Console.WriteLine($"Tamaño del Mazo : {Mazo<Carta>.Instancia.Baraja.Count}");
+           // Console.WriteLine($"Tamaño del Mazo : {Mazo<Carta>.Instancia.Baraja.Count}");
         }
     
     public void InvertirEfecto()
     {
         EfectoCancelado = !EfectoCancelado;
-        Console.WriteLine($"[LOG] ¡Nope jugado! Estado de cancelación: {EfectoCancelado}");
+        //Console.WriteLine($"[LOG] ¡Nope jugado! Estado de cancelación: {EfectoCancelado}");
     }
 
     public void MeterJugadaEnCola(Carta carta)

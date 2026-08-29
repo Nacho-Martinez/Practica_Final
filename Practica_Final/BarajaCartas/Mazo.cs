@@ -47,7 +47,7 @@ public class Mazo<T> where T : Carta
         {
             try
             {
-                Console.WriteLine("[LOG] La Animacion de robar ha terminado");
+                //Console.WriteLine("[LOG] La Animacion de robar ha terminado");
                 if (cartaRobar is Carta_Explosion)
                 {
                     Interfaz.Instancia.cartaBomba = cartaRobar;

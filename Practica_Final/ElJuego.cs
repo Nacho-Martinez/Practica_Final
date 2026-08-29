@@ -36,7 +36,7 @@ public class ElJuego
             {
                 if (TurnManager.Instance.jugadoresVivos[i] is Jugador_Robot)
                 {
-                    Console.WriteLine($"[DEBUG] Destruyendo IA: {TurnManager.Instance.jugadoresVivos[i].Nombre}");
+                    //Console.WriteLine($"[DEBUG] Destruyendo IA: {TurnManager.Instance.jugadoresVivos[i].Nombre}");
                     TurnManager.Instance.jugadoresVivos.RemoveAt(i);
                     MotorJuego.Intancia.RevisarFInPartida();
                     trampaBloqueada = true;
@@ -52,7 +52,7 @@ public class ElJuego
             {
                 if (TurnManager.Instance.jugadoresVivos[i] is Jugador_Humano)
                 {
-                    Console.WriteLine($"[DEBUG] Humano destruido.");
+                    //Console.WriteLine($"[DEBUG] Humano destruido.");
                     TurnManager.Instance.jugadoresVivos.RemoveAt(i);
                     MotorJuego.Intancia.RevisarFInPartida();
                     trampaBloqueada = true;
@@ -128,7 +128,7 @@ public class ElJuego
             
             Jugador_Robot nuevaIa = new(nombre,cerebroElegido);
             
-            Console.WriteLine($"[CONFIG] IA Creada: {nombre} | Dificultad: {cerebroElegido.GetType().Name}");
+            //Console.WriteLine($"[CONFIG] IA Creada: {nombre} | Dificultad: {cerebroElegido.GetType().Name}");
             TurnManager.Instance.jugadoresVivos.Add(nuevaIa);
         }
     }
@@ -183,7 +183,7 @@ public class ElJuego
 
                 if (TurnoConfirmadoPendiente && Interfaz.Instancia.AnimacionesActivas.Count == 0 && StateManager.Intancia.EstadoActual is Estado_Normal)
                 {
-                    Console.WriteLine("[DEBUG] Procesando turnoConfirmadoPendiente");
+                    //Console.WriteLine("[DEBUG] Procesando turnoConfirmadoPendiente");
                     TurnoConfirmadoPendiente = false;
                     TurnoSinRobarPendiente = 0;
                     TurnManager.Instance.ConfirmarPasoDeTurno();
@@ -198,7 +198,7 @@ public class ElJuego
                         int indice = TurnManager.Instance.jugadoresVivos.IndexOf(TurnManager.Instance.JugadorActual);
                         indice = (indice + 1) % TurnManager.Instance.jugadoresVivos.Count;
                         TurnManager.Instance.DarTurno(TurnManager.Instance.jugadoresVivos[indice]);
-                        Console.WriteLine("[DEBUG] Procesando turnoSinRobarPendiente");
+                        //Console.WriteLine("[DEBUG] Procesando turnoSinRobarPendiente");
                         EventManager.Instancia.SiguenteTurno();
                     }
                 }
